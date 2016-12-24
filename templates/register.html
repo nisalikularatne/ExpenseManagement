@@ -2,6 +2,16 @@
 {% block body %}
   <form action="" method=post class="form-horizontal">
     <h2>Sign up for Home Automation Application </h2>
+        {% with messages = get_flashed_messages() %}
+       {% if messages %}
+
+        <ul>
+         {% for message in messages %}
+           <li><strong>{{message}}</strong></li>
+         {% endfor %}
+       </ul>
+       {% endif %}
+     {% endwith %}
     <div class="control-group">
         <div class="controls">
           <input type="text" id="username" name="username" class="input-xlarge"

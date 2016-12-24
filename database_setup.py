@@ -11,7 +11,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String(250), nullable=False)
+    username = Column(String(250),nullable=False)
     password=Column(String(20),nullable=False)
     email = Column(String(250), nullable=False)
     registered_on = Column(DateTime, default=datetime.datetime.utcnow())
@@ -36,8 +36,7 @@ class User(Base):
 
 
     def get_id(self):
-       return self.id.decode("UTF-8")
-
+        return self.id
 
     def __repr__(self):
        return '<User %r>' % (self.username)
