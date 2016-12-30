@@ -15,6 +15,7 @@ class User(Base):
     password=Column(String(20),nullable=False)
     email = Column(String(250), nullable=False)
     registered_on = Column(DateTime, default=datetime.datetime.utcnow())
+    budget = RelationshipProperty("Budget")
 
 
     def __init__(self, username, password, email):
@@ -40,6 +41,42 @@ class User(Base):
 
     def __repr__(self):
        return '<User %r>' % (self.username)
+
+
+
+class Budget(Base):
+    __tablename__='budget'
+    id = Column(Integer, primary_key=True)
+    B_name=Column(String(250),nullable=False)
+    B_Amount=Column(Integer(200))
+    registered_on = Column(DateTime, default=datetime.datetime.utcnow())
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = RelationshipProperty(User)
+    category=RelationshipProperty("Categories")
+    transactions = RelationshipProperty("Transactions")
+
+class Categories(Base):
+    __tablename__='categories'
+    id=Column(Integer,primary_key=True)
+    C_name = Column(String(250), nullable=False)
+    budget = RelationshipProperty(Budget)
+    registered_on = Column(DateTime, default=datetime.datetime.utcnow())
+    budget_id = Column(Integer, ForeignKey('budget.id'))
+    transactions = RelationshipProperty("Transactions")
+
+class Transactions(Base):
+    __tablename__='transactions'
+    id=Column(Integer,primary_key=True)
+    B_Amount = Column(String(200))
+    budget_id = Column(Integer, ForeignKey('budget.id'))
+    category_id=Column(Integer,ForeignKey('categories.id'))
+    budget = RelationshipProperty(Budget)
+    category = RelationshipProperty(Categories)
+
+
+
+
+
 #engine creation
 engine=create_engine('sqlite:///HomeAutomation.db')
 Base.metadata.create_all(engine)

@@ -1,0 +1,22 @@
+<html>
+<body>
+<h1>Transactions</h1>
+<a href="/budget">Go back to Budget</a><br>
+<a href="/budget/{{ budget_id }}/categories">Go back to Categories</a>
+
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<ul>
+{% for message in messages %}
+  <li><strong>{{message}}</strong></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% for transaction in transactions %}
+ <p>{{transaction.B_Amount}}</p>
+{% endfor %}
+</body>
+</html>
