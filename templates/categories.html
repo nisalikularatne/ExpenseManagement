@@ -1,0 +1,25 @@
+<html>
+<body>
+<h1>Categories</h1>
+<a href= '/budget/{{budget.id}}/categories/new'>Create new Category</a><br>
+<a href= '/budget'>Go Back to Budget</a>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<ul>
+{% for message in messages %}
+  <li><strong>{{message}}</strong></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% for category in categories %}
+<p>{{category.C_name}}</p>
+<a href="/budget/{{ budget.id }}/categories/{{category.id }}/Transactions">Show Transaction</a><br>
+<a href="/budget/{{ budget.id}}/categories/{{category.id}}/newTransaction">Create New Transaction</a>
+
+{% endfor %}
+<br><br>
+<a href="/budget/budget_id/categories">Cancel</a>
+</body>
+</html>

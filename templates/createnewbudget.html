@@ -1,0 +1,15 @@
+<html>
+<body>
+<h1>Create a new Budget</h1>
+<form action= "{{url_for('newBudget')}}" method = 'POST'>
+
+<p>Name:</p>
+<input type = 'text' size='30' name = 'name'>
+<p>Amount:</p>
+<input type = 'text' size='20' name = 'B_Amount'>
+
+<input type='submit' value='New'>
+</form>
+<a href= '/'>Cancel</a>
+</body>
+</html>

@@ -1,0 +1,44 @@
+
+<html>
+<body>
+<h1>Budget</h1>
+<a href= '/createBudget'>Create new Budget</a>
+
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<ul>
+{% for message in messages %}
+  <li><strong>{{message}}</strong></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% for budget in budget_first %}
+    <p>
+{% set sum=0.0 |float -%}
+{% for transaction in transactions %}
+{% if budget.id==transaction.budget_id %}
+
+{% set amount_trans=transaction.B_Amount |float -%}
+{% set sum=sum+amount_trans %}
+{{ sum }}
+{% endif %}
+
+{% if budget.user_id==budget_user_id %}
+ {{budget.B_name}}
+
+#
+ {% set amount=budget.B_Amount %}
+ {% set amount=amount|float -%}
+ {{amount-sum}}</p>
+    {% endif %}
+    {% endfor %}
+<a href= '/budget/{{budget.id}}/categories'>Show Transaction Categories</a>
+
+
+{%  endfor %}
+
+</body>
+</html>
