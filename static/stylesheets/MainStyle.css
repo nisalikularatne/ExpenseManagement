@@ -1,0 +1,154 @@
+body {
+    background-image: url("/static/images/blue.jpg");
+}
+
+#heading{
+    font-size:50px;
+    font-family:"Tahoma";
+    margin-top: 10%;
+    color: #fcf6ff;
+}
+.button1 {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #101010;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin-left: 550px;
+  margin-top:50px;
+
+}
+.button1 span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+.button1 span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button1:hover span {
+  padding-right: 25px;
+}
+
+.button1:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+.button2 {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #000000;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin-left: 550px;
+}
+.button2 span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+.button2 span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button2:hover span {
+  padding-right: 25px;
+}
+
+.button2:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+.registerheading{
+    color:white;
+}
+#register1{
+    margin-top:120px;
+    margin-left: 520px;
+    background-color: #217449;
+    height:400px;
+    width:350px;
+    padding-top: 250px;
+    padding-bottom: 70px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+.img-money{
+    margin-bottom:40px ;
+}
+.Home-Expense-heading{
+    font-size: 30px;
+    font-family: "Script MT Bold";
+    color: #ffff09;
+}
+.Home-Expense-signup{
+    font-size: 20px;
+    font-family: "Script MT Bold";
+    color: #fdff13;
+
+}
+input[type=text],input[type=email],input[type=password] {
+    border: 4px solid #101010;
+    border-radius: 4px;
+    background-color: #044a3e;
+}
+.button3 {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #343434;
+  border: none;
+  color: #FFFFFF;
+  font-size: 20px;
+  transition: all 0.5s;
+  cursor: pointer;
+
+}
+.button3 span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+.button3 span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button3:hover span {
+  padding-right: 25px;
+}
+
+.button3:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+

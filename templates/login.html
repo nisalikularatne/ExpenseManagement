@@ -1,8 +1,14 @@
-
+<head>
+     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}">
+     <link  href="{{ url_for('static', filename='blue.jpg') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/MainStyle.css') }}">
+</head>
 {% block body %}
+    <img src="/static/images/Money.jpg" class="img-money" alt="Smiley face" width="200" height="100" style="position: absolute; top: 120px; left: 595px;">
 
-  <form action="{{url_for('login')}}" method=post class="form-horizontal">
-    <h2>Sign-in to Expense Management Application </h2>
+  <form action="{{url_for('login')}}" method=post class="form-horizontal" id="register1">
+     <DIV style="position: absolute; top:250px; left:600px; width:200px; height:25px" class="Home-Expense-heading">Home Expense</DIV>
+  <DIV style="position: absolute; top:320px; left:670px; width:200px; height:25px" class="Home-Expense-signup">Login</DIV>
       {% with messages = get_flashed_messages() %}
        {% if messages %}
 
@@ -29,7 +35,7 @@
 
     <div class="control-group">
         <div class="controls">
-          <button type="submit" class="btn btn-success">Signin</button>
+         <button type="submit" style="position:absolute; top:470px; left:635px; width:150px; height:40px" class="button3" ><span>Sign-In</span></button>
         </div>
     </div>
   </form>
