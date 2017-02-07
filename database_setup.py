@@ -68,6 +68,7 @@ class Transactions(Base):
     __tablename__='transactions'
     id=Column(Integer,primary_key=True)
     B_Amount = Column(String(200))
+    registered_on = Column(DateTime)
     budget_id = Column(Integer, ForeignKey('budget.id'))
     category_id=Column(Integer,ForeignKey('categories.id'))
     budget = RelationshipProperty(Budget)

@@ -17,28 +17,33 @@
 {% endwith %}
 {% for budget in budget_first %}
     <p>
-{% set sum=0.0 |float -%}
-{% for transaction in transactions %}
-{% if budget.id==transaction.budget_id %}
-
-{% set amount_trans=transaction.B_Amount |float -%}
-{% set sum=sum+amount_trans %}
-{{ sum }}
-{% endif %}
-
 {% if budget.user_id==budget_user_id %}
- {{budget.B_name}}
+     {{budget.B_name}}<br>
+     <p>Original Budget Designated</p>{{ budget.B_Amount }}<br>
+    
+    {% for trans in transactions %}
+        {% if trans.budget_id==budget.id %}
+    <p>
+
+    {% set budget2 = budget.B_Amount  | int %}
+
+    <p>Remaining Money Left In Budget</p>{{ budget2 - trans.total }}
 
 
- {% set amount=budget.B_Amount %}
- {% set amount=amount|float -%}
- {{amount-sum}}</p>
-    {% endif %}
-    {% endfor %}
+</p>
+        {% endif %}
+
+{% endfor %}
+
+</p>
+
+
 <a href= '/budget/{{budget.id}}/categories'>Show Transaction Categories</a>
+ {% endif %}
 
 
 {%  endfor %}
+
 
 </body>
 </html>

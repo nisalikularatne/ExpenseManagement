@@ -1,11 +1,32 @@
 <html>
+<head>
+     <meta charset="utf-8">
+	<title>DatePicker Example</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script>
+	$(function() {
+		$( ".dtpick" ).datepicker();
+	});
+	</script>
+</head>
 <body>
 <h1>Create a new Transaction for category {{ category.C_name }}</h1>
 <form action= "{{url_for('newTransaction',category_id=category_id,budget_id=budget_id)}}" method = 'POST'>
 
 
 <p>Amount of Transaction:</p>
-<input type = 'text' size='20' name = 'amount'>
+<input type = 'text' size='20' name = 'amount'><br><br>
+    <p>Select the date of transaction</p>
+
+
+
+
+  <input type="date" name="transaction-date">
+
+
+
 
 <input type='submit' value='New'>
 </form>

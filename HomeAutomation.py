@@ -3,11 +3,14 @@ from flask import Flask
 from flask import Flask, render_template, request, redirect, url_for
 from flask import flash
 from flask_login import login_user , logout_user , current_user , login_required
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine,func
 from sqlalchemy.orm import sessionmaker
+from flask_wtf import Form
 from database_setup import User,Base,Budget,Categories,Transactions
 from flask_login import LoginManager
 from flask import session as login_session
+from wtforms import DateField
+from datetime import datetime
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -15,6 +18,9 @@ engine = create_engine('sqlite:///HomeAutomation.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+class DateForm(Form):
+    dt = DateField('Pick a Date', format="%m/%d/%Y")
+
 login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(id):
@@ -85,7 +91,8 @@ def newBudget():
 @app.route('/budget',methods=['GET','POST'])
 def showbudget():
     budget_first = session.query(Budget).all()
-    transactions=session.query(Transactions).filter(Transactions.budget_id==Budget.id).all()
+    transactions=session.query(Transactions.budget_id.label("budget_id"),func.sum(Transactions.B_Amount).label("total"))
+    transactions=transactions.group_by(Transactions.budget_id).all()
     budget_user_id=login_session['user_id']
 
 
@@ -120,9 +127,12 @@ def showCategory(budget_id):
 def newTransaction(category_id,budget_id):
     category = session.query(Categories).filter(Categories.id == category_id).one()
     budget = session.query(Budget).filter(Budget.id == budget_id).one()
+
     if request.method == 'POST':
+        dt_start = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
+
         newCategoryTransaction = Transactions(
-            B_Amount=request.form['amount'], category_id=category_id,budget_id=budget_id)
+            B_Amount=request.form['amount'],registered_on=dt_start, category_id=category_id,budget_id=budget_id)
         session.add(newCategoryTransaction)
         session.commit()
         flash('new category created')

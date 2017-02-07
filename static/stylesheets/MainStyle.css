@@ -116,6 +116,7 @@ input[type=text],input[type=email],input[type=password] {
     border: 4px solid #101010;
     border-radius: 4px;
     background-color: #044a3e;
+    color:white;
 }
 .button3 {
   display: inline-block;
