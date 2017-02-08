@@ -29,6 +29,9 @@ def load_user(id):
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     return render_template('HomePage.html')
+@app.route('/hi', methods=['GET', 'POST'])
+def hi():
+    return render_template('FrontPage.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -71,7 +74,7 @@ def login():
       login_session['user_id']=registered_user.id
       login_user(registered_user)
       flash('Logged in successfully')
-      return redirect(url_for('newBudget'))
+      return redirect(url_for('showbudget'))
     return render_template('login.html')
 
 @app.route('/createBudget',methods=['GET','POST'])
