@@ -102,6 +102,7 @@ def showbudget():
     return render_template(
             'budget.html',budget_first=budget_first,budget_user_id=budget_user_id,transactions=transactions)
 
+"""new category"""
 @app.route('/budget/<int:budget_id>/categories/new', methods=['GET', 'POST'])
 def newBudgetCategory(budget_id):
     budget = session.query(Budget).filter(Budget.id == budget_id).one()
