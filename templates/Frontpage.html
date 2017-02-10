@@ -36,6 +36,12 @@ body {
 .sidenav a:hover, .offcanvas a:focus{
     color: #ffffff;
 }
+.flash-messages{
+    position: absolute;
+    top:20px;
+    left:600px;
+    font-size: 50px;
+}
 
 .sidenav .closebtn {
     position: absolute;
@@ -71,6 +77,16 @@ body {
 }
 </style>
 <body>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<ul>
+{% for message in messages %}
+  <li class="flash-messages"><strong>{{message}}</strong></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -80,7 +96,7 @@ body {
      <i class="fa fa-money" style="font-size:24px;color:white;position:absolute; top:330px; left:15px;"></i>
   <a href="#" class="dropbtn" onclick="showDropDown()">&nbsp &nbsp Budget</a>
     <div id="myDropdown" class="dropdown-content">
-    <a href="#"onclick="createBudget()">Create a Budget</a>
+    <a href="#"onclick="createBudget()" >Create a Budget</a>
         <a href="#" onclick="displayBudget()">Show Budgets</a>
         </div>
         </div>
@@ -130,6 +146,11 @@ window.onclick = function(event) {
         }));
 
     }
+     function displaycategories(){
+        $(document).ready((function () {
+            $("#includedContent").load("/createBudget");
+        }));
+     }
 </script>
 
 </body>

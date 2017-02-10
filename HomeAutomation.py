@@ -87,7 +87,7 @@ def newBudget():
         session.add(newbudgetname)
         session.commit()
         flash('new budget created')
-        return redirect(url_for('showbudget'))
+        return render_template('Frontpage.html')
     else:
         return render_template('createnewbudget.html')
 
