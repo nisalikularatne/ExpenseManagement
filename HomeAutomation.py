@@ -1,8 +1,7 @@
-from flask import Flask
 # import all the modules for the project
 from flask import Flask, render_template, request, redirect, url_for
 from flask import flash
-from flask_login import login_user , logout_user , current_user , login_required
+from flask_login import login_user
 from sqlalchemy import create_engine,func
 from sqlalchemy.orm import sessionmaker
 from flask_wtf import Form
@@ -31,7 +30,11 @@ def hello():
     return render_template('HomePage.html')
 @app.route('/hi', methods=['GET', 'POST'])
 def hi():
-    return render_template('FrontPage.html')
+    if 'username' not in login_session:
+        return render_template(
+            'register.html')
+    else:
+      return render_template('FrontPage.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -127,6 +130,12 @@ def showCategory(budget_id):
     return render_template(
             'categories.html', budget=budget, categories=categories,budget_id=budget_id)
 
+@app.route('/clearSession')
+def clearSession():
+    login_session.clear()
+    flash("logged out")
+    return redirect('/login')
+
 @app.route('/budget/<int:budget_id>/categories/<int:category_id>/newTransaction', methods=['GET', 'POST'])
 def newTransaction(category_id,budget_id):
     category = session.query(Categories).filter(Categories.id == category_id).one()
@@ -150,6 +159,7 @@ def showTransactions(budget_id,category_id):
     transactions = session.query(Transactions).filter(
         category_id==Transactions.category_id).all()
     return render_template('transactions.html',transactions=transactions,category_id=category_id,budget_id=budget_id)
+
 
 
 if __name__ == "__main__":
