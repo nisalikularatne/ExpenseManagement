@@ -1,0 +1,23 @@
+[
+  {
+    "timestamp": "Monday",
+    "original_tweet": "756",
+    "retweets": "345",
+    "shared": "34",
+    "quoted": "14"
+  },
+  {
+    "timestamp": "Tuesday",
+    "original_tweet": "756",
+    "retweets": "345",
+    "shared": "34",
+    "quoted": "14"
+  },
+  {
+    "timestamp": "Wednesday",
+    "original_tweet": "756",
+    "retweets": "345",
+    "shared": "34",
+    "quoted": "14"
+  }
+]
