@@ -138,7 +138,7 @@ def showbudget():
 
 @app.route('/chart/JSON',methods=['GET','POST'])
 def showchartJSON():
-    chooser = request.form['chooser'];
+
     chart=session.query(Categories.C_name,func.sum(Transactions.B_Amount).label('total')).filter(Categories.id==Transactions.category_id).group_by(Categories.C_name).all()
     l=jsonify(Categories=chart)
 
