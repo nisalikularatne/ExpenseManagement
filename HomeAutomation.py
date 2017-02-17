@@ -1,6 +1,10 @@
 # import all the modules for the project
+from flask import Flask, jsonify, render_template, url_for
+from flask_googlecharts import GoogleCharts, BarChart, MaterialLineChart
+from flask_googlecharts.utils import prep_data
+import datetime
 from flask import Flask, render_template, request, redirect, url_for
-from flask import flash
+from flask import flash,jsonify
 from flask_login import login_user
 from sqlalchemy import create_engine,func
 from sqlalchemy.orm import sessionmaker
@@ -10,13 +14,37 @@ from flask_login import LoginManager
 from flask import session as login_session
 from wtforms import DateField
 from datetime import datetime
+from flask_googlecharts import BarChart,PieChart
+
+import json
+import urllib2 as url_request
+import simplejson
+from flask_googlecharts import GoogleCharts
+import os
+import requests
+
+os.environ['no_proxy'] = '127.0.0.1,localhost'
+
 app = Flask(__name__)
+@app.route('/chart', methods=['GET', 'POST'])
+def chart():
+	# The data can come from anywhere you can read it; for instance, a SQL
+	# query or a file on the filesystem created by another script.
+	# This example expects two values per row; for more complicated examples,
+	# refer to the Google Charts gallery.
+
+    r = requests.get('http://0.0.0.0:9000/chart/JSON',allow_redirects=False)
+    data = json.load(r)
+    return render_template('template.html', data=data)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 engine = create_engine('sqlite:///HomeAutomation.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
 class DateForm(Form):
     dt = DateField('Pick a Date', format="%m/%d/%Y")
 
@@ -24,6 +52,9 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(id):
     return session.query(User).get(int(id))
+
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def hello():
@@ -104,6 +135,18 @@ def showbudget():
 
     return render_template(
             'budget.html',budget_first=budget_first,budget_user_id=budget_user_id,transactions=transactions)
+
+@app.route('/chart/JSON',methods=['GET','POST'])
+def showchartJSON():
+    chooser = request.form['chooser'];
+    chart=session.query(Categories.C_name,func.sum(Transactions.B_Amount).label('total')).filter(Categories.id==Transactions.category_id).group_by(Categories.C_name).all()
+    l=jsonify(Categories=chart)
+
+    data=map(list,chart)
+    return render_template('template.html',data=data)
+
+
+
 
 """new category"""
 @app.route('/budget/<int:budget_id>/categories/new', methods=['GET', 'POST'])

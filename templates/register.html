@@ -5,7 +5,7 @@
 </head>
 <div id="register">
 {% block body %}
-  <form action="" method=post class="text-center" id="register1">
+  <form action="{{url_for('register')}}" method=post class="text-center" id="register1">
   <img src="/static/images/Money.jpg" class="img-money" alt="Smiley face" width="200" height="100" style="position: absolute; top: 120px; left: 595px;">
   <DIV style="position: absolute; top:250px; left:600px; width:200px; height:25px" class="Home-Expense-heading">Home Expense</DIV>
   <DIV style="position: absolute; top:320px; left:600px; width:200px; height:25px" class="Home-Expense-signup">Register</DIV>
