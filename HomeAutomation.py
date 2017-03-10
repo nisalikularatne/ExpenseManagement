@@ -15,13 +15,14 @@ from flask import session as login_session
 from wtforms import DateField
 from datetime import datetime
 from flask_googlecharts import BarChart,PieChart
-
+from datetime import timedelta
 import json
 import urllib2 as url_request
 import simplejson
 from flask_googlecharts import GoogleCharts
 import os
 import requests
+from passlib.hash import sha256_crypt
 
 os.environ['no_proxy'] = '127.0.0.1,localhost'
 
@@ -63,52 +64,78 @@ def hello():
 def hi():
     if 'username' not in login_session:
         return render_template(
-            'register.html')
+            'login.html')
     else:
-      return render_template('FrontPage.html')
+        budget_first = session.query(Budget).all()
+        budget_user_id = login_session['user_id']
+        budget_count = session.query(Budget, func.count().label("sum")).filter(Budget.user_id == budget_user_id).one()
+        transactions = session.query(Transactions.budget_id.label("budget_id"),
+                                     func.sum(Transactions.B_Amount).label("total"))
+        transactions1 = transactions.group_by(Transactions.budget_id).all()
+
+
+        one_day_interval_before = datetime.now() - timedelta(days=7)
+        number_transaction=session.query(Transactions,func.count().label("number_trans")).filter(
+        Transactions.transaction_user_id==login_session['user_id'],Transactions.registered_on >= one_day_interval_before).one()
+        total_transaction = session.query(Transactions, func.count().label("total_trans")).filter(
+          Transactions.transaction_user_id == login_session['user_id']).one()
+        transactions = session.query(Transactions).filter(Transactions.transaction_user_id==login_session['user_id']).all()
+        return render_template('dashboard.html', number_transaction=number_transaction, transactions=transactions, total_transaction=total_transaction, budget_first=budget_first, budget_user_id=budget_user_id, transactions1=transactions1, budget_count=budget_count)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
-    username=request.form['username'];
-    email=request.form['email'];
+    username = request.form['username'];
+    email = request.form['email'];
     registered_user = session.query(User).filter_by(username=username).all()
-    registered_email=session.query(User).filter_by(email=email).all()
-    if int(len(registered_user))>0:
+    registered_email = session.query(User).filter_by(email=email).all()
+    if int(len(registered_user)) > 0:
         flash("User already exists")
-        return  redirect(url_for('register'))
-    if int(len(registered_email))>0:
+        return redirect(url_for('register'))
+    if int(len(registered_email)) > 0:
         flash("Email registered on database")
-        return  redirect(url_for('register'))
+        return redirect(url_for('register'))
     else:
-      user = User(request.form['username'], request.form['password'], request.form['email'])
-      session.add(user)
-      session.commit()
-      flash('User successfully registered')
-      return redirect(url_for('login'))
+        password = sha256_crypt.encrypt(request.form['password'])
+        user = User(request.form['username'], password, request.form['email'])
+        session.add(user)
+        session.commit()
+        flash('User successfully registered')
+        return redirect(url_for('login'))
 
+@app.route('/contact')
+def contact():
+    return render_template('Contact.html')
 
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
 
-    username = request.form['username']
-    password = request.form['password']
-    registered_user = session.query(User).filter_by(username=username,password=password).first()
-    if request.method=='POST':
-     if registered_user is None:
-        flash('Username or Password is invalid')
 
-     else:
-      login_session['username'] = username
-      login_session['password']= password
-      login_session['user_id']=registered_user.id
-      login_user(registered_user)
-      flash('Logged in successfully')
-      return redirect(url_for('showbudget'))
+    username = request.form['username']
+    password = sha256_crypt.encrypt(request.form['password'])
+    registered_user = session.query(User).filter_by(username=username).first()
+    if request.method == 'POST':
+        text = request.form.get('checksign')
+        if text:
+            session.permanent = True
+        if not text:
+            session.permanent = False
+            app.permanent_session_lifetime = timedelta(seconds=5)
+        if registered_user is None:
+            flash('Username or Password is invalid')
+
+        elif sha256_crypt.verify(request.form['password'], password):
+
+            login_session['username'] = username
+            login_session['password'] = password
+            login_session['user_id'] = registered_user.id
+            login_user(registered_user)
+            flash('Logged in successfully')
+            return redirect(url_for('showbudget'))
     return render_template('login.html')
 
 @app.route('/createBudget',methods=['GET','POST'])
@@ -121,20 +148,52 @@ def newBudget():
         session.add(newbudgetname)
         session.commit()
         flash('new budget created')
-        return render_template('Frontpage.html')
+        return redirect(url_for('hi'))
     else:
         return render_template('createnewbudget.html')
 
 @app.route('/budget',methods=['GET','POST'])
 def showbudget():
     budget_first = session.query(Budget).all()
+    budget_user_id = login_session['user_id']
+    budget_count=session.query(Budget,func.count().label("sum")).filter(Budget.user_id==budget_user_id).one()
     transactions=session.query(Transactions.budget_id.label("budget_id"),func.sum(Transactions.B_Amount).label("total"))
     transactions=transactions.group_by(Transactions.budget_id).all()
-    budget_user_id=login_session['user_id']
+
 
 
     return render_template(
-            'budget.html',budget_first=budget_first,budget_user_id=budget_user_id,transactions=transactions)
+            'budgetfinal.html',budget_first=budget_first,budget_user_id=budget_user_id,transactions=transactions,budget_count=budget_count)
+
+@app.route('/budget/<int:budget_id>',methods=['GET','POST'])
+def showindividualbudget(budget_id):
+    budget_first = session.query(Budget).filter(Budget.id == budget_id).one()
+    transactions = session.query(Transactions.budget_id.label("budget_id"),
+                                 func.sum(Transactions.B_Amount).label("total"))
+    transactions = transactions.group_by(Transactions.budget_id).all()
+    categories = session.query(Categories).filter(
+        budget_id == Budget.id).all()
+    categoriesfull = session.query(Categories).all()
+    categoriesnames = session.query(Categories).filter(
+        Categories.id == Transactions.category_id, budget_id==Transactions.budget_id).all()
+    transactionsinbudget=session.query(Transactions).filter(
+        budget_id==Transactions.budget_id).all()
+
+    if request.method=='POST':
+      categoryname=request.form.get('categoryname')
+      categoryidofname = session.query(Categories).filter(
+          Categories.C_name == categoryname).one()
+      newCategoryTransaction = Transactions(
+          B_Amount=request.form['amount'], registered_on=datetime.now(), category_id=categoryidofname.id, budget_id=budget_id,
+          transaction_user_id=login_session['user_id'])
+      session.add(newCategoryTransaction)
+      session.commit()
+      return redirect(url_for('showindividualbudget', budget_id=budget_id))
+
+    return render_template('individualbudget.html', categoriesfull=categoriesfull, categoriesnames=categoriesnames,
+                           budget_first=budget_first, transactions=transactions,
+                           transactionsinbudget=transactionsinbudget, categories=categories)
+
 
 @app.route('/chart/JSON',methods=['GET','POST'])
 def showchartJSON():
@@ -144,6 +203,11 @@ def showchartJSON():
 
     data=map(list,chart)
     return render_template('template.html',data=data)
+@app.route('/forms',methods=['GET','POST'])
+def showform():
+
+    return render_template('base.html')
+
 
 
 
@@ -167,11 +231,10 @@ def newBudgetCategory(budget_id):
 def showCategory(budget_id):
     budget = session.query(Budget).filter(Budget.id == budget_id).one()
     categories = session.query(Categories).filter(
-        budget_id == Categories.budget_id).all()
-
+        budget_id == Budget.id).all()
 
     return render_template(
-            'categories.html', budget=budget, categories=categories,budget_id=budget_id)
+            'categories.html', budget=budget, categories=categories)
 
 @app.route('/clearSession')
 def clearSession():
@@ -184,15 +247,17 @@ def newTransaction(category_id,budget_id):
     category = session.query(Categories).filter(Categories.id == category_id).one()
     budget = session.query(Budget).filter(Budget.id == budget_id).one()
 
+
     if request.method == 'POST':
         dt_start = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
+        transaction_user_id = login_session['user_id']
 
         newCategoryTransaction = Transactions(
-            B_Amount=request.form['amount'],registered_on=dt_start, category_id=category_id,budget_id=budget_id)
+            B_Amount=request.form['amount'],registered_on=dt_start, category_id=category_id,budget_id=budget_id,transaction_user_id=login_session['user_id'])
         session.add(newCategoryTransaction)
         session.commit()
         flash('new category created')
-        return redirect(url_for('showTransactions', category_id=category_id,budget_id=budget_id))
+        return redirect(url_for('showTransactions', category_id=category_id,budget_id=budget_id,transaction_user_id=transaction_user_id))
     else:
         return render_template(
             'newTransactions.html', category_id=category_id,budget_id=budget_id,budget=budget,category=category)
@@ -201,7 +266,8 @@ def newTransaction(category_id,budget_id):
 def showTransactions(budget_id,category_id):
     transactions = session.query(Transactions).filter(
         category_id==Transactions.category_id).all()
-    return render_template('transactions.html',transactions=transactions,category_id=category_id,budget_id=budget_id)
+    transaction_user_id=login_session['user_id']
+    return render_template('transactions.html',transactions=transactions,category_id=category_id,budget_id=budget_id,transaction_user_id=transaction_user_id)
 
 
 

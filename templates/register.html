@@ -1,53 +1,114 @@
-<head>
-     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}">
-     <link  href="{{ url_for('static', filename='blue.jpg') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/MainStyle.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home Expense Mangement System</title>
+    <!-- Bootstrap -->
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+	{% block styles %}
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+      {%  endblock styles %}
+	<link rel="js" href="static/js/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="static/css/isotope.css" media="screen" />
+	<link rel="stylesheet" href="static/css/style.css">
+  <link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Open+Sans:600'>
+    <link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Open+Sans:600'>
+
+      <link rel="stylesheet" href="static/css/style2.css">
+
 </head>
 <div id="register">
+
 {% block body %}
-  <form action="{{url_for('register')}}" method=post class="text-center" id="register1">
-  <img src="/static/images/Money.jpg" class="img-money" alt="Smiley face" width="200" height="100" style="position: absolute; top: 120px; left: 595px;">
-  <DIV style="position: absolute; top:250px; left:600px; width:200px; height:25px" class="Home-Expense-heading">Home Expense</DIV>
-  <DIV style="position: absolute; top:320px; left:600px; width:200px; height:25px" class="Home-Expense-signup">Register</DIV>
-        {% with messages = get_flashed_messages() %}
-       {% if messages %}
 
-        <ul>
-         {% for message in messages %}
-           <li><strong>{{message}}</strong></li>
-         {% endfor %}
-       </ul>
-       {% endif %}
-     {% endwith %}
-    <div class="control-group">
-        <div class="controls">
-          <input type="text" id="username" name="username" class="input-xlarge"
-            placeholder="Enter Username" value="{{ request.form.username }}"
-            required>
-        </div>
-    </div>
+<header>
+		<div class="main-menu">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<h1><a class="navbar-brand" href="HomePage" data-0="line-height:90px;" data-300="line-height:50px;"> Home Expense
+							Management System
+						</a></h1>
+					</div>
+					<div class="col-md-15">
+						<div class="dropdown">
+							<ul class="nav nav-pills">
+							    <li><a href="HomePage">Home</a></li>
+								<li class="active"><a href="register">Sign Up</a></li>
+							    <li><a href="login">Log In</a></li>
+								<li><a href="contact">Contact Us</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
 
-    <div class="control-group">
-        <div class="controls">
-          <input type="password" id="password" name="password" class="input-xlarge"
-            placeholder="Enter Password" value="{{ request.form.password }}"
-            required>
-        </div>
-    </div>
+<body>
+  <div class="login-wrap">
+	<div class="login-html">
+		<input id="tab-2" type="radio" name="tab" class="sign-up" checked><label for="tab-2" class="tab">Sign Up</label>
+		<div class="login-form">
 
-    <div class="control-group">
-        <div class="controls">
-          <input type="email" id="email" name="email" class="input-xlarge"
-            placeholder="Enter Email" value="{{ request.form.username }}"
-            required>
-        </div>
-    </div>
+			<div class="sign-up-htm">
+                  <form action="{{url_for('register')}}" method= "POST" class="text-center" id="register1">
+				<div class="group">
+					<label for="username" class="label">Username</label>
+					<input id="username" name="username" type="text" class="input" value="{{ request.form.username }}" required>
+				</div>
+				<div class="group">
+					<label for="password" class="label">Password</label>
+					<input id="password" name="password" type="password" class="input" data-type="password" value="{{ request.form.password }}" required>
+				</div>
+				<div class="group">
+					<label for="email" class="label">Email Address</label>
+					<input id="email" type="text" name="email" class="input" value="{{ request.form.username }}" required>
+				</div>
+				<div class="group">
+					<input type="submit" class="button" value="Sign Up">
+				</div>
+                 </form>
+                   {% endblock %}
+			</div>
 
-    <div class="control-group">
-        <div class="controls">
-          <button type="submit" style="position:absolute; top:470px; left:635px; width:150px; height:40px" class="button3" ><span>Sign-Up</span></button>
-        </div>
-    </div>
-  </form>
-{% endblock %}
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+    <footer>
+		<section id="footer" class="section footer">
+			<div class="container">
+				<div class="row animated opacity mar-bot20" data-andown="fadeIn" data-animation="animation">
+					<div class="col-sm-50 align-center">
+					</div>
+				</div>
+				<div class="row align-center copyright">
+					<div class="col-sm-12 text-center">
+					    <p>Software Enginering Group Project</p>
+                        <div class="credits">
+                            <p>Credits to : Nisali Kularatne, Ken Poon, Jaslin Kaur, Nik, Ahmad Zakwan</p>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</section>
+		<a href="#" class="scrollup"><i class="fa fa-chevron-up"> </i></a>
+	</footer>
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="static/js/bootstrap.js" rel="text/javascript"></script>
+	<script src="static/js/jquery.isotope.min.js"></script>
+	<script src="static/js/fancybox/jquery.fancybox.pack.js"></script>
+	<script src="static/js/wow.min.js"></script>
+	<script src="static/js/functions.js"></script>
+    <script type="text/javascript">new WOW().init();</script>
+
 </div>

@@ -2,6 +2,7 @@ from sqlalchemy import ForeignKey,Column,Integer,String,DateTime
 import sys
 import unicodedata
 import datetime
+from datetime import date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy import create_engine
@@ -16,6 +17,8 @@ class User(Base):
     email = Column(String(250), nullable=False)
     registered_on = Column(DateTime, default=datetime.datetime.utcnow())
     budget = RelationshipProperty("Budget")
+    transactions = RelationshipProperty("Transactions")
+
 
 
     def __init__(self, username, password, email):
@@ -59,9 +62,12 @@ class Categories(Base):
     __tablename__='categories'
     id=Column(Integer,primary_key=True)
     C_name = Column(String(250), nullable=False)
+    Icon  = Column(String(250), nullable=False)
+    Icon_Face = Column(String(250), nullable=False)
     budget = RelationshipProperty(Budget)
     registered_on = Column(DateTime, default=datetime.datetime.utcnow())
     budget_id = Column(Integer, ForeignKey('budget.id'))
+
     transactions = RelationshipProperty("Transactions")
 
 class Transactions(Base):
@@ -71,8 +77,13 @@ class Transactions(Base):
     registered_on = Column(DateTime)
     budget_id = Column(Integer, ForeignKey('budget.id'))
     category_id=Column(Integer,ForeignKey('categories.id'))
+    transaction_user_id = Column(Integer, ForeignKey('user.id'))
+    user = RelationshipProperty(User)
     budget = RelationshipProperty(Budget)
     category = RelationshipProperty(Categories)
+
+
+
 
 
 

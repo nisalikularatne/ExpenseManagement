@@ -1,22 +1,101 @@
-{% block body %}
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}">
-     <link  href="{{ url_for('static', filename='blue.jpg') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/MainStyle.css') }}">
-</head>
-<body>
- <title>Expense Management</title>
-         <h1 class="text-center" id="heading">Expense Management System</h1>
-        <div id="Homebtn">
-            <form method="get" action="/register">
-    <button class='button1' style="vertical-align:middle" type="submit"><span>Register </span></button>
-</form>
-          <form method="get" action="/login">
-    <button class='button2' style="vertical-align:middle" type="submit"><span>Login</span></button>
-</form>
-        </div>
-</body>
-</html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home Expense Mangement System</title>
+    <!-- Bootstrap -->
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+	{% block styles %}
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+      {%  endblock styles %}
+	<link rel="js" href="static/js/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="static/css/isotope.css" media="screen" />
+	<link rel="stylesheet" href="static/css/style.css">
+  </head>
+  {% block body %}
+
+    <header>
+		<div class="main-menu">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<h1><a class="navbar-brand" href="HomePage.html" data-0="line-height:90px;" data-300="line-height:50px;"> Home Expense
+							Management System
+						</a></h1>
+					</div>
+					<div class="col-md-15">
+						<div class="dropdown">
+							<ul class="nav nav-pills">
+							    <li class="active"><a href="HomePage">Home</a></li>
+								<li><a href="register">Sign Up</a></li>
+							    <li><a href="login">Log In</a></li>
+								<li><a href="contact">Contact Us</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<div class="slider text-center">
+		<img src="static/images/home.jpg" alt=""  />
+	</div>
+
+	<!-- column content -->
+		<div class="container">
+			<div class="row">
+				<div class="wow bounceInRight">
+                     <div class="col-md-30">
+					<div class="col-lg-6">
+						<h4>Home Automation</h4>
+						<img src="static/images/home1.jpg" alt="House" style="width:100px;height:100px;">
+						<p>This web based system is based on home automation to be able to control the automation of lighting and
+											sensors in each room to track the presence of users in the room.</p>
+					</div>
+				</div>
+                </div>
+				<div class="wow bounceInLeft">
+					<div class="col-lg-6">
+						<h4>Expense Management</h4>
+						<img src="static/images/money1.png" alt="Money" style="width:200px;height:100px;">
+						<p>Manage the expenses of users using a monthly budgeting system.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end column content -->
+	<footer>
+		<section id="footer" class="section footer">
+			<div class="container">
+				<div class="row animated opacity mar-bot20" data-andown="fadeIn" data-animation="animation">
+					<div class="col-sm-12 align-center">
+					</div>
+				</div>
+				<div class="row align-center copyright">
+					<div class="col-sm-12 text-center">
+					    <p>Software Enginering Group Project</p>
+                        <div class="credits">
+                            <p>Credits to : Nisali Kularatne, Ken Poon, Jaslin Kaur, Nik, Ahmad Zakwan</p>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</section>
+		<a href="#" class="scrollup"><i class="fa fa-chevron-up"> </i></a>
+	</footer>
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="static/js/bootstrap.js" rel="text/javascript"></script>
+	<script src="static/js/jquery.isotope.min.js"></script>
+	<script src="static/js/fancybox/jquery.fancybox.pack.js"></script>
+	<script src="static/js/wow.min.js"></script>
+	<script src="static/js/functions.js"></script>
+    <script type="text/javascript">new WOW().init();</script>
 {% endblock %}
+</html>

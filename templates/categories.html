@@ -1,7 +1,10 @@
 <html>
+<head>
+     <link rel='stylesheet' href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+    <link rel='stylesheet' href="{{ url_for('static', filename='bootstrap/bootstrap.min.css')}}">
+</head>
 <body>
 <h1>Categories</h1>
-<a href= '/budget/{{budget.id}}/categories/new'>Create new Category</a><br>
 <a href= '/budget'>Go Back to Budget</a>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
@@ -13,12 +16,17 @@
 </ul>
 {% endif %}
 {% endwith %}
-{% for category in categories %}
-<p>{{category.C_name}}</p>
-<a href="/budget/{{ budget.id }}/categories/{{category.id }}/Transactions">Show Transaction</a><br>
-<a href="/budget/{{ budget.id}}/categories/{{category.id}}/newTransaction">Create New Transaction</a>
+ <div class="row placeholders">
+        {% for entry in categories %}
+          <a class="my_category_element" href='{{ url_for("newTransaction",budget_id=budget.id,category_id=entry.id)}}'>
+            <div class="col-xs-3 col-sm-2 col-md-1 placeholder ">
+                    <p> <i class="{{ entry.Icon }}"></i></p>
+                    <i class="{{ entry.Icon_Face }}" style="font-size:192px;"></i>
 
-{% endfor %}
+            </div>
+
+        {% endfor %}
+    </div>
 <br><br>
 <a href="/budget/budget_id/categories">Cancel</a>
 </body>
