@@ -144,7 +144,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+                        <a href="{{ url_for("showchartJSON") }}"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
                     </li>
 
                     <li>
@@ -203,7 +203,7 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge">{{ number_transaction.number_trans }}</div>
-                                        <div>New Transactions made in last <strong>7 </strong>days!</div>
+                                        <div>New Transactions made in <strong>this</strong> MONTH!</div>
                                     </div>
                                 </div>
                             </div>

@@ -1,88 +1,59 @@
 # import all the modules for the project
-from flask import Flask, jsonify, render_template, url_for
-from flask_googlecharts import GoogleCharts, BarChart, MaterialLineChart
-from flask_googlecharts.utils import prep_data
 import datetime
+from datetime import date
 from flask import Flask, render_template, request, redirect, url_for
 from flask import flash,jsonify
 from flask_login import login_user
-from sqlalchemy import create_engine,func
+from sqlalchemy import create_engine,func,extract
 from sqlalchemy.orm import sessionmaker
-from flask_wtf import Form
 from database_setup import User,Base,Budget,Categories,Transactions
 from flask_login import LoginManager
 from flask import session as login_session
-from wtforms import DateField
 from datetime import datetime
-from flask_googlecharts import BarChart,PieChart
 from datetime import timedelta
-import json
-import urllib2 as url_request
-import simplejson
-from flask_googlecharts import GoogleCharts
 import os
-import requests
 from passlib.hash import sha256_crypt
 
 os.environ['no_proxy'] = '127.0.0.1,localhost'
-
+#statements to load the database
 app = Flask(__name__)
-@app.route('/chart', methods=['GET', 'POST'])
-def chart():
-	# The data can come from anywhere you can read it; for instance, a SQL
-	# query or a file on the filesystem created by another script.
-	# This example expects two values per row; for more complicated examples,
-	# refer to the Google Charts gallery.
-
-    r = requests.get('http://0.0.0.0:9000/chart/JSON',allow_redirects=False)
-    data = json.load(r)
-    return render_template('template.html', data=data)
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 engine = create_engine('sqlite:///HomeAutomation.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
-
-class DateForm(Form):
-    dt = DateField('Pick a Date', format="%m/%d/%Y")
-
 login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(id):
     return session.query(User).get(int(id))
 
-
-
-
+#url and functionality for the front page
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     return render_template('HomePage.html')
+
+#url for the dashboard and also its functionality
 @app.route('/hi', methods=['GET', 'POST'])
 def hi():
+    #the dashboard only renders if a user is logged into the system else it redirects to the login page
     if 'username' not in login_session:
         return render_template(
             'login.html')
     else:
-        budget_first = session.query(Budget).all()
-        budget_user_id = login_session['user_id']
-        budget_count = session.query(Budget, func.count().label("sum")).filter(Budget.user_id == budget_user_id).one()
-        transactions = session.query(Transactions.budget_id.label("budget_id"),
-                                     func.sum(Transactions.B_Amount).label("total"))
-        transactions1 = transactions.group_by(Transactions.budget_id).all()
-
-
-        one_day_interval_before = datetime.now() - timedelta(days=7)
+        today=date.today()#gets todays details
+        month=today.month#gets the current month
+        budget_user_id = login_session['user_id']#get the logged in users id
+        budget_first = session.query(Budget).filter(extract('month',Budget.registered_on) == month,Budget.user_id==budget_user_id).all()#extracts all the budgets in the current month of the user logged in
+        budget_count = session.query(Budget, func.count().label("sum")).filter(Budget.user_id == budget_user_id).one()#function to count how many budgets the user has created
+        #to get the transactions made in the current month
         number_transaction=session.query(Transactions,func.count().label("number_trans")).filter(
-        Transactions.transaction_user_id==login_session['user_id'],Transactions.registered_on >= one_day_interval_before).one()
-        total_transaction = session.query(Transactions, func.count().label("total_trans")).filter(
-          Transactions.transaction_user_id == login_session['user_id']).one()
+        Transactions.transaction_user_id==login_session['user_id'],extract('month',Transactions.registered_on) == month).one()
+        #the transaction object for the table of transactions in the dashboard
         transactions = session.query(Transactions).filter(Transactions.transaction_user_id==login_session['user_id']).all()
-        return render_template('dashboard.html', number_transaction=number_transaction, transactions=transactions, total_transaction=total_transaction, budget_first=budget_first, budget_user_id=budget_user_id, transactions1=transactions1, budget_count=budget_count)
+        return render_template('dashboard.html', number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count)
 
-
+#the handler which deals with the user registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -104,11 +75,12 @@ def register():
         session.commit()
         flash('User successfully registered')
         return redirect(url_for('login'))
-
+#contact handler not yet working
 @app.route('/contact')
 def contact():
     return render_template('Contact.html')
 
+#login handler for the software
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method == 'GET':
@@ -138,47 +110,21 @@ def login():
             return redirect(url_for('showbudget'))
     return render_template('login.html')
 
-@app.route('/createBudget',methods=['GET','POST'])
-def newBudget():
-    if request.method == 'POST':
-        newbudgetname = Budget(
-            B_name=request.form['name'],
-            B_Amount=float(request.form['B_Amount']),
-            user_id=login_session['user_id'])
-        session.add(newbudgetname)
-        session.commit()
-        flash('new budget created')
-        return redirect(url_for('hi'))
-    else:
-        return render_template('createnewbudget.html')
-
-@app.route('/budget',methods=['GET','POST'])
-def showbudget():
-    budget_first = session.query(Budget).all()
-    budget_user_id = login_session['user_id']
-    budget_count=session.query(Budget,func.count().label("sum")).filter(Budget.user_id==budget_user_id).one()
-    transactions=session.query(Transactions.budget_id.label("budget_id"),func.sum(Transactions.B_Amount).label("total"))
-    transactions=transactions.group_by(Transactions.budget_id).all()
-
-
-
-    return render_template(
-            'budgetfinal.html',budget_first=budget_first,budget_user_id=budget_user_id,transactions=transactions,budget_count=budget_count)
-
+#when a budget under the navigation bar is clicked it renders a new page with the budget details and also we can then make new transactions from there
 @app.route('/budget/<int:budget_id>',methods=['GET','POST'])
 def showindividualbudget(budget_id):
-    budget_first = session.query(Budget).filter(Budget.id == budget_id).one()
+    budget_first = session.query(Budget).filter(Budget.id == budget_id).one()#gets the budget details depending on which budget is clicked
     transactions = session.query(Transactions.budget_id.label("budget_id"),
                                  func.sum(Transactions.B_Amount).label("total"))
-    transactions = transactions.group_by(Transactions.budget_id).all()
+    transactions = transactions.group_by(Transactions.budget_id).all()# calculation of total transaction for that budget
     categories = session.query(Categories).filter(
-        budget_id == Budget.id).all()
-    categoriesfull = session.query(Categories).all()
+        budget_id == Budget.id).all()#categories for that budget
+    categoriesfull = session.query(Categories).all()#all the categories..This is used for the dropdown for selecting the category for which the transaction should be made
     categoriesnames = session.query(Categories).filter(
         Categories.id == Transactions.category_id, budget_id==Transactions.budget_id).all()
     transactionsinbudget=session.query(Transactions).filter(
         budget_id==Transactions.budget_id).all()
-
+    #handles the posting of a transaction into the database
     if request.method=='POST':
       categoryname=request.form.get('categoryname')
       categoryidofname = session.query(Categories).filter(
@@ -194,83 +140,34 @@ def showindividualbudget(budget_id):
                            budget_first=budget_first, transactions=transactions,
                            transactionsinbudget=transactionsinbudget, categories=categories)
 
-
-@app.route('/chart/JSON',methods=['GET','POST'])
+#for handling the charts
+@app.route('/charts',methods=['GET','POST'])
 def showchartJSON():
+    today = date.today()  # gets todays details
+    month = today.month  # gets the current month
+    budget_user_id = login_session['user_id']  # get the logged in users id
+    budget_first = session.query(Budget).filter(extract('month', Budget.registered_on) == month,
+                                                Budget.user_id == budget_user_id).all()  # extracts all the budgets in the current month of the user logged in
 
-    chart=session.query(Categories.C_name,func.sum(Transactions.B_Amount).label('total')).filter(Categories.id==Transactions.category_id).group_by(Categories.C_name).all()
-    l=jsonify(Categories=chart)
+    if request.method=='POST':
 
-    data=map(list,chart)
-    return render_template('template.html',data=data)
-@app.route('/forms',methods=['GET','POST'])
-def showform():
+        budgetname=request.form.get('budgetname')
+        budgetid=session.query(Budget).filter(Budget.B_name==budgetname).first()
+        chart=session.query(Categories.C_name,func.sum(Transactions.B_Amount).label('total')).filter(Categories.id==Transactions.category_id,Transactions.budget_id==budgetid.id).group_by(Categories.C_name).all()
+        data=map(list,chart)
+        return render_template('charts.html', data=data,budget_first=budget_first)
+    return render_template('charts.html', budget_first=budget_first)
 
-    return render_template('base.html')
-
-
-
-
-
-"""new category"""
-@app.route('/budget/<int:budget_id>/categories/new', methods=['GET', 'POST'])
-def newBudgetCategory(budget_id):
-    budget = session.query(Budget).filter(Budget.id == budget_id).one()
-    if request.method == 'POST':
-        newBudgetCategory = Categories(
-            C_name=request.form['name'],budget_id=budget_id)
-        session.add(newBudgetCategory)
-        session.commit()
-        flash('new category created')
-        return redirect(url_for('showCategory',budget_id=budget_id))
-    else:
-        return render_template(
-            'newcategory.html',budget=budget,budget_id=budget_id )
-
-@app.route('/budget/<int:budget_id>/categories', methods=['GET', 'POST'])
-def showCategory(budget_id):
-    budget = session.query(Budget).filter(Budget.id == budget_id).one()
-    categories = session.query(Categories).filter(
-        budget_id == Budget.id).all()
-
-    return render_template(
-            'categories.html', budget=budget, categories=categories)
-
+#for the log out functionality
 @app.route('/clearSession')
 def clearSession():
     login_session.clear()
     flash("logged out")
     return redirect('/login')
 
-@app.route('/budget/<int:budget_id>/categories/<int:category_id>/newTransaction', methods=['GET', 'POST'])
-def newTransaction(category_id,budget_id):
-    category = session.query(Categories).filter(Categories.id == category_id).one()
-    budget = session.query(Budget).filter(Budget.id == budget_id).one()
 
 
-    if request.method == 'POST':
-        dt_start = datetime.strptime(request.form['transaction-date'], '%Y-%m-%d')
-        transaction_user_id = login_session['user_id']
-
-        newCategoryTransaction = Transactions(
-            B_Amount=request.form['amount'],registered_on=dt_start, category_id=category_id,budget_id=budget_id,transaction_user_id=login_session['user_id'])
-        session.add(newCategoryTransaction)
-        session.commit()
-        flash('new category created')
-        return redirect(url_for('showTransactions', category_id=category_id,budget_id=budget_id,transaction_user_id=transaction_user_id))
-    else:
-        return render_template(
-            'newTransactions.html', category_id=category_id,budget_id=budget_id,budget=budget,category=category)
-
-@app.route('/budget/<int:budget_id>/categories/<int:category_id>/Transactions', methods=['GET', 'POST'])
-def showTransactions(budget_id,category_id):
-    transactions = session.query(Transactions).filter(
-        category_id==Transactions.category_id).all()
-    transaction_user_id=login_session['user_id']
-    return render_template('transactions.html',transactions=transactions,category_id=category_id,budget_id=budget_id,transaction_user_id=transaction_user_id)
-
-
-
+#main function
 if __name__ == "__main__":
     app.secret_key = 'super_secret_key'
     app.debug = True
