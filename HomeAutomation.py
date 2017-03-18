@@ -107,7 +107,7 @@ def login():
             login_session['user_id'] = registered_user.id
             login_user(registered_user)
             flash('Logged in successfully')
-            return redirect(url_for('showbudget'))
+            return redirect(url_for('hi'))
     return render_template('login.html')
 
 #when a budget under the navigation bar is clicked it renders a new page with the budget details and also we can then make new transactions from there
@@ -146,18 +146,62 @@ def showchartJSON():
     today = date.today()  # gets todays details
     month = today.month  # gets the current month
     budget_user_id = login_session['user_id']  # get the logged in users id
+   # extracts all the budgets in the current month of the user logged in
+    budgetname1 = request.form.get('budgetname')
     budget_first = session.query(Budget).filter(extract('month', Budget.registered_on) == month,
-                                                Budget.user_id == budget_user_id).all()  # extracts all the budgets in the current month of the user logged in
+                                                Budget.user_id == budget_user_id).all()
 
+
+
+    if request.method=='POST' and request.form.get('budgetname') and request.form.get('monthname'):
+        budgetname = request.form.get('budgetname')
+        month=request.form.get('monthname')
+        budget_first = session.query(Budget).filter(extract('month', Budget.registered_on) == month,
+                                                    Budget.user_id == budget_user_id).all()
+        budgetid = session.query(Budget).filter(Budget.B_name == budgetname).first()
+        chart = session.query(Categories.C_name, func.sum(Transactions.B_Amount).label('total')).filter(
+            Categories.id == Transactions.category_id, Transactions.budget_id == budgetid.id).group_by(
+            Categories.C_name).all()
+        data = map(list, chart)
+        return render_template('charts.html',data=data,budgetname=budgetname,budget_first=budget_first,month=month)
+    if request.method == 'POST' and request.form.get('monthname'):
+        month = request.form.get('monthname')
+        budget_first = session.query(Budget).filter(extract('month', Budget.registered_on) == month,
+                                                    Budget.user_id == budget_user_id).all()
+
+        return render_template('charts.html', budget_first=budget_first)
+
+        return render_template('charts.html', budget_first=budget_first, month=month)
+
+
+#for handling the reports
+@app.route('/reports/monthly',methods=['GET','POST'])
+def showreports():
     if request.method=='POST':
+      month=request.form.get('monthname');
+      budget_user_id = login_session['user_id']
+      budget_name = session.query(Budget).filter(extract('month',Budget.registered_on) == month,Budget.user_id==budget_user_id).all();
+      category = session.query(Categories).all();
+      transaction = session.query(Transactions).all();
+      return render_template('reports.html',budget_name = budget_name,category = category,transaction = transaction,month=month)
+    return render_template('reports.html')
+@app.template_filter('strftime')
+def datetimeformat(date, format='%d-%m-%Y %H:%M'):
+        return date.strftime(format)
 
-        budgetname=request.form.get('budgetname')
-        budgetid=session.query(Budget).filter(Budget.B_name==budgetname).first()
-        chart=session.query(Categories.C_name,func.sum(Transactions.B_Amount).label('total')).filter(Categories.id==Transactions.category_id,Transactions.budget_id==budgetid.id).group_by(Categories.C_name).all()
-        data=map(list,chart)
-        return render_template('charts.html', data=data,budget_first=budget_first)
-    return render_template('charts.html', budget_first=budget_first)
-
+@app.route('/reports/monthly',methods=['GET','POST'])
+def showweeklyreports():
+    if request.method=='POST':
+      month=request.form.get('monthname');
+      budget_user_id = login_session['user_id']
+      budget_name = session.query(Budget).filter(extract('month',Budget.registered_on) == month,Budget.user_id==budget_user_id).all();
+      category = session.query(Categories).all();
+      transaction = session.query(Transactions).all();
+      return render_template('reports.html',budget_name = budget_name,category = category,transaction = transaction,month=month)
+    return render_template('reports.html')
+@app.template_filter('strftime')
+def datetimeformat(date, format='%d-%m-%Y %H:%M'):
+        return date.strftime(format)
 #for the log out functionality
 @app.route('/clearSession')
 def clearSession():
