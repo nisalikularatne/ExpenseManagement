@@ -1,194 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600" rel="stylesheet" type="text/css">
+        <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
+                <link rel='stylesheet' type=text/css href="{{ url_for('static', filename='css/individualbudget.css')}}">
 
-<p>Budget Name - {{budget_first.B_name}}</p>
-<p>Budget Initial Amount - {{budget_first.B_Amount}}</p>
-{% for trans in transactions %}
+        <title>Budget</title>
+    </head>
+    <body>
+
+
+        <div class="top">
+            <div class="budget">
+                <div class="budget__title">
+                    Money left for {{ budget_first.B_name }}
+                </div>
+
+                <div class="budget__value"> {% for trans in transactions %}
         {% if trans.budget_id==budget_first.id %}
     <p>
 
     {% set budget2 = budget_first.B_Amount  | int %}
 
-    <p>Remaining Money Left In Budget</p>{{ budget2 - trans.total }}
+    {{ budget2 - trans.total }} Ringgit
 
 
 </p>
         {% endif %}
 
-{% endfor %}
-  {% for trans in transactionsinbudget %}
+{% endfor %}</div>
 
-                    <p> {{ trans.B_Amount }}</p>
+                <div class="budget__income clearfix">
+                    <div class="budget__income--text">Income</div>
+                    <div class="right">
+                        <div class="budget__income--value">+ {{budget_first.B_Amount}} RM</div>
+                        <div class="budget__income--percentage">&nbsp;</div>
+                    </div>
+                </div>
+
+                <div class="budget__expenses clearfix">
+                    <div class="budget__expenses--text">Expenses</div>
+                    <div class="right clearfix">
+                        <div class="budget__expenses--value">- {% for trans in transactions %}
+        {% if trans.budget_id==budget_first.id %}
+
+
+    {% set budget2 = budget_first.B_Amount  | int %}
+
+    {{ trans.total }} RM
 
 
 
-        {% endfor %}
+        {% endif %}
 
- {% for name in categoriesnames %}
+{% endfor %}</div>
+                        <div class="budget__expenses--percentage">{% for trans in transactions %}
+        {% if trans.budget_id==budget_first.id %}
 
-                    <p> {{ name.C_name }}</p>
+
+    {% set budget2 = budget_first.B_Amount  | int %}
+            {% set transtotal = trans.total  | int %}
+             {% set proc_err1 = (transtotal/budget2)*100 %}
 
 
-        {% endfor %}
 
-<br><br>
-<a href="/hi">Go back to Dashboard</a><br><br>
-<div id="id01" class="modal">
+    {{ '%0.1f'| format(proc_err1|float) }} %
 
-  <form class="modal-content animate" action="{{url_for('showindividualbudget',budget_id=budget_first.id)}}" method='POST'>
-    <div class="imgcontainer">
-      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
 
-    </div>
 
-    <div class="container">
-      <label><b>Select a Category for the Transaction</b></label>
-       <select name="categoryname">
+        {% endif %}
+
+{% endfor %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="bottom">
+       <form  action="{{url_for('showindividualbudget',budget_id=budget_first.id)}}" method='POST'>
+            <div class="add" >
+                <div class="add__container">
+                    <select id="myDIV"class="add__type" onchange="myFunction()">
+                        <option value="inc" selected>+</option>
+                        <option value="exp">-</option>
+                    </select>
+
+                     <select id="myDIV1" class="add__description" name="categoryname" >
            {%  for category in categoriesfull %}
     <option value="{{category.C_name}}" name="{{ category.id }}">{{ category.C_name}}</option>
 {% endfor %}
 
-  </select><br><br>
+  </select>
+                    <input id="myDIV2" type="number" class="add__value" name="amount" placeholder="Value">
+                    <button type="submit" id="myDIV3" class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
+                 </form>
+            <script>
+function myFunction() {
+    document.getElementById("myDIV").classList.toggle("red-focus");
+      document.getElementById("myDIV1").classList.toggle("red-focus");
+      document.getElementById("myDIV2").classList.toggle("red-focus");
+      document.getElementById("myDIV3").classList.toggle("red-focus");
+     document.getElementById("myDIV3").classList.toggle("red");
 
-
-      <label><b>Transaction Amount in Dollars ($)</b></label>
-      <input type="text" placeholder="Enter Your Transaction Amount" name="amount"  required>
-
-      <button type="submit">Click to make transaction</button>
-
-    </div>
-
-    <div class="container" style="background-color:#f1f1f1">
-      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-    </div>
-  </form>
-</div>
-
-<script>
-// Get the modal
-var modal = document.getElementById('id01');
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
 }
 </script>
-<style>
-/* Full-width input fields */
-input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
+                </div>
+            </div>
 
-/* Set a style for all buttons */
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
 
-/* Extra styles for the cancel button */
-.cancelbtn {
-    width: auto;
-    padding: 10px 18px;
-    background-color: #f44336;
-}
+            <div class="container clearfix">
+                <div class="income">
+                    <h2 class="icome__title">Income</h2>
 
-/* Center the image and position the close button */
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-    position: relative;
-}
+                    <div class="income__list">
 
-img.avatar {
-    width: 40%;
-    border-radius: 50%;
-}
+                        <!--
+                        <div class="item clearfix" id="income-0">
+                            <div class="item__description">Salary</div>
+                            <div class="right clearfix">
+                                <div class="item__value">+ 2,100.00</div>
+                                <div class="item__delete">
+                                    <button class="item__delete--btn">
+                                        <i class="ion-ios-close-outline"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-.container {
-    padding: 16px;
-}
+                        <div class="item clearfix" id="income-1">
+                            <div class="item__description">Sold car</div>
+                            <div class="right clearfix">
+                                <div class="item__value">+ 1,500.00</div>
+                                <div class="item__delete">
+                                    <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        -->
 
-span.psw {
-    float: right;
-    padding-top: 16px;
-}
+                    </div>
+                </div>
 
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    padding-top: 30px;
-}
 
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 0.000003% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-}
 
-/* The Close Button (x) */
-.close {
-    position: absolute;
-    right: 25px;
-    top: 0;
-    color: #000;
-    font-size: 35px;
-    font-weight: bold;
-}
+                <div class="expenses">
+                    <h2 class="expenses__title">Expenses</h2>
 
-.close:hover,
-.close:focus {
-    color: red;
-    cursor: pointer;
-}
+                    <div class="expenses__list">
 
-/* Add Zoom Animation */
-.animate {
-    -webkit-animation: animatezoom 0.6s;
-    animation: animatezoom 0.6s
-}
 
-@-webkit-keyframes animatezoom {
-    from {-webkit-transform: scale(0)}
-    to {-webkit-transform: scale(1)}
-}
+ {% for g in groupbytransactions %}
+         {% set budget2 = budget_first.B_Amount  | int %}
+            {% set transtotal = g.transaction_category  | int %}
 
-@keyframes animatezoom {
-    from {transform: scale(0)}
-    to {transform: scale(1)}
-}
 
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-    span.psw {
-       display: block;
-       float: none;
-    }
-    .cancelbtn {
-       width: 100%;
-    }
-}
-</style>
-<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Create new transaction for the this budget</button>
-</body>
+                    <div class="item clearfix" >
+                        <div  class="item__description clearfix"> {{ g.C_name }}  </div>
+                        <div  class=" right  clearfix ">
+                            <div class="item__value">{{ g.transaction_category }}</div>
+                            {% set proc_err = (transtotal/budget2)*100 %}
+                             <div class="item__percentage">{{'%0.1f'| format(proc_err|float)}}%</div>
+
+                                <div class="item__delete">
+                                    <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                                </div>
+                        </div>
+                    </div>
+
+
+        {% endfor %}
+
+
+
+                        <!--
+                        <div class="item clearfix" id="expense-0">
+                            <div class="item__description">Apartment rent</div>
+                            <div class="right clearfix">
+                                <div class="item__value">- 900.00</div>
+                                <div class="item__percentage">21%</div>
+                                <div class="item__delete">
+                                    <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item clearfix" id="expense-1">
+                            <div class="item__description">Grocery shopping</div>
+                            <div class="right clearfix">
+                                <div class="item__value">- 435.28</div>
+                                <div class="item__percentage">10%</div>
+                                <div class="item__delete">
+                                    <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <script src="/static/js/app.js"></script>
+    {% for g in groupbytransactions %}
+        {{ g.C_name }}
+        {{ g.transaction_category }}
+    {% endfor %}
+
+    </body>
 </html>

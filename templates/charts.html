@@ -67,7 +67,7 @@
     <div id="content">
         <h1>Expense Categories Charts</h1>
          <form name="budget_form" id="budget_form" action="{{url_for('showchartJSON')}}" method="POST" >
-          <select name="monthname" onchange="this.form.submit()">
+          <select name="monthname"  onchange="this.form.submit()">
 
 
                    <option value="3" name="3"{% if ('3' == month) %} selected="selected"  {% endif %} >March 2017</option>
@@ -88,12 +88,14 @@
   </select><br><br>
 
 
-         <select name="budgetname" id="budgetname" onchange="this.form.submit()" >
+         <select name="budgetname" id="budgetname"   onchange="this.form.submit()" >
+          <option value="" disabled selected>Select your Budget</option>
               {%  for b in budget_first %}
                    <option value="{{ b.B_name }}"{% if (b.B_name == budgetname) %} selected="selected"  {% endif %} name="{{ b.id }}" >{{ b.B_name }}</option>
              {% endfor %}
 
   </select>
+
 
              <br><br>
 

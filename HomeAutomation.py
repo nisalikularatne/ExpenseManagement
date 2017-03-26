@@ -124,6 +124,7 @@ def showindividualbudget(budget_id):
         Categories.id == Transactions.category_id, budget_id==Transactions.budget_id).all()
     transactionsinbudget=session.query(Transactions).filter(
         budget_id==Transactions.budget_id).all()
+    groupbytransactions=session.query(Categories.C_name,func.sum(Transactions.B_Amount).label('transaction_category')).filter(Transactions.budget_id==budget_id,Transactions.category_id==Categories.id).group_by(Categories.C_name).all()
     #handles the posting of a transaction into the database
     if request.method=='POST':
       categoryname=request.form.get('categoryname')
@@ -138,7 +139,7 @@ def showindividualbudget(budget_id):
 
     return render_template('individualbudget.html', categoriesfull=categoriesfull, categoriesnames=categoriesnames,
                            budget_first=budget_first, transactions=transactions,
-                           transactionsinbudget=transactionsinbudget, categories=categories)
+                           transactionsinbudget=transactionsinbudget, categories=categories,groupbytransactions=groupbytransactions)
 
 #for handling the charts
 @app.route('/charts',methods=['GET','POST'])
@@ -171,7 +172,7 @@ def showchartJSON():
 
         return render_template('charts.html', budget_first=budget_first)
 
-        return render_template('charts.html', budget_first=budget_first, month=month)
+    return render_template('charts.html', budget_first=budget_first, month=month)
 
 
 #for handling the reports
