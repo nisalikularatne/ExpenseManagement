@@ -73,7 +73,8 @@ class Categories(Base):
 class Transactions(Base):
     __tablename__='transactions'
     id=Column(Integer,primary_key=True)
-    B_Amount = Column(String(200))
+    B_Amount = Column(String(200),nullable=False)
+    description=Column(String(1000))
     registered_on = Column(DateTime)
     budget_id = Column(Integer, ForeignKey('budget.id'))
     category_id=Column(Integer,ForeignKey('categories.id'))

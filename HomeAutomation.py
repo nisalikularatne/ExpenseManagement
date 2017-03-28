@@ -124,7 +124,7 @@ def showindividualbudget(budget_id):
         Categories.id == Transactions.category_id, budget_id==Transactions.budget_id).all()
     transactionsinbudget=session.query(Transactions).filter(
         budget_id==Transactions.budget_id).all()
-    groupbytransactions=session.query(Categories.C_name,func.sum(Transactions.B_Amount).label('transaction_category')).filter(Transactions.budget_id==budget_id,Transactions.category_id==Categories.id).group_by(Categories.C_name).all()
+    groupbytransactions=session.query(Categories.C_name,Transactions.description,func.sum(Transactions.B_Amount).label('transaction_category')).filter(Transactions.budget_id==budget_id,Transactions.category_id==Categories.id).group_by(Categories.C_name).all()
     #handles the posting of a transaction into the database
     if request.method=='POST':
       categoryname=request.form.get('categoryname')
@@ -132,7 +132,7 @@ def showindividualbudget(budget_id):
           Categories.C_name == categoryname).one()
       newCategoryTransaction = Transactions(
           B_Amount=request.form['amount'], registered_on=datetime.now(), category_id=categoryidofname.id, budget_id=budget_id,
-          transaction_user_id=login_session['user_id'])
+          transaction_user_id=login_session['user_id'],description=request.form['description'])
       session.add(newCategoryTransaction)
       session.commit()
       return redirect(url_for('showindividualbudget', budget_id=budget_id))

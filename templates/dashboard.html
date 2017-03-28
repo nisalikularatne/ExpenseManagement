@@ -24,19 +24,50 @@
 
     <!-- Custom Fonts -->
 
-     {% block styles -%}
-
+{% block styles -%}
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 {% endblock styles %}
 
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
+    <script type="text/javascript">
+
+        var save = '{{session.budget_name}}';
+
+        function suggestion(x,y){
+
+            var a = x/y;
+
+            document.write(save);
+
+            if(a === 0){
+                document.write("You have finished your budget for this month!");
+            }
+            if((0.1  < a) && (a <= 0.2)){
+                document.write("You have less than 20% left of your original budget!");
+            }
+            if((0.21 < a) && (a <= 0.4)){
+                document.write("You have less than 40% left of your original budget!");
+            }
+            if((0.41 < a) && (a <= 0.6)){
+                document.write("You have less than 60% left of your original budget!");
+            }
+            if((0.61 < a) && (a <= 0.8)){
+                document.write("You have less than 80% left of your original budget!");
+            }
+            if((0.81 < a) && (a <= 1)){
+                document.write("You have less than 40% left of your original budget!");
+            }
+        }
+
+    </script>
 
 </head>
 
  {% block body %}
-
+<body>
     <div id="wrapper">
 
         <!-- Navigation -->
@@ -158,7 +189,7 @@
                             </li>
                         </ul>
                     </li>
-                  
+
 
                 </ul>
             </div>
@@ -244,10 +275,17 @@
                     <div class="col-lg-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Tasks Panel</h3>
+                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Suggestions Panel</h3>
                             </div>
                             <div class="panel-body">
-                                <div class="list-group">
+                                <div class="list-group" id="Suggestion">
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">just now</span>
+                                        <i class="fa fa-fw fa-calendar"></i>
+                                        <script>
+                                            suggestion(5,5);
+                                        </script>
+                                    </a>
                                     <a href="#" class="list-group-item">
                                         <span class="badge">just now</span>
                                         <i class="fa fa-fw fa-calendar"></i> Calendar updated
@@ -264,22 +302,6 @@
                                         <span class="badge">46 minutes ago</span>
                                         <i class="fa fa-fw fa-money"></i> Invoice 653 has been paid
                                     </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">1 hour ago</span>
-                                        <i class="fa fa-fw fa-user"></i> A new user has been added
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">2 hours ago</span>
-                                        <i class="fa fa-fw fa-check"></i> Completed task: "pick up dry cleaning"
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">yesterday</span>
-                                        <i class="fa fa-fw fa-globe"></i> Saved the world
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">two days ago</span>
-                                        <i class="fa fa-fw fa-check"></i> Completed task: "fix error on sales page"
-                                    </a>
                                 </div>
                                 <div class="text-right">
                                     <a href="#">View All Activity <i class="fa fa-arrow-circle-right"></i></a>
@@ -287,6 +309,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -334,8 +357,8 @@
 </div>
     <!-- jQuery -->
 
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
 
     <!-- Bootstrap Core JavaScript -->
        <script src="static/js/bootstrap.min.js" rel="text/javascript" media="screen"></script>
@@ -348,5 +371,5 @@
         </div>
 
 {% endblock %}
-
+</body>
 </html>

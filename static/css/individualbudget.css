@@ -122,7 +122,7 @@ body {
 
 .add__container {
     margin: 0 auto;
-    text-align: center;
+    text-align: left;
 }
 
 .add__type {
@@ -136,7 +136,7 @@ body {
     font-weight: 300;
     transition: border 0.3s;
 }
-
+.add__description1,
 .add__description,
 .add__value {
     border: 1px solid #e7e7e7;
@@ -150,14 +150,19 @@ body {
     transition: border 0.3s;
 }
 
-.add__description { width: 50%;}
+.add__description {
+    width: 25%;
+}
+.add__description1 {
+    width: 40%;
+}
 .add__value { width: 100px;}
 
 .add__btn {
     font-size: 35px;
     background: none;
     border: none;
-    color: #28B9B5;
+    color: #b91b21;
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
@@ -171,10 +176,8 @@ body {
 .add__description:focus,
 .add__value:focus {
     outline: none;
-    border: 1px solid #28B9B5;
+    border: 1px solid #b91e17;
 }
-
-.add__btn:focus { outline: none; }
 
 /***** LISTS *****/
 .container {
@@ -190,7 +193,7 @@ body {
 
 .expenses {
     float: left;
-    width: 475px;
+    width: 70%;
 }
 
 h2 {
@@ -213,6 +216,11 @@ h2 {
 
 .item__description {
     float: left;
+}
+.item2 {
+    float: left;
+    align-content: right;
+    margin-left: 50%;
 }
 
 .item__value {
