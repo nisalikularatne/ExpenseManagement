@@ -48,7 +48,10 @@ def hi():
     else:
         today=date.today()#gets todays details
         month=today.month#gets the current month
+        mydate = datetime.now()
+        mydate=mydate.strftime("%B")
         budget_user_id = login_session['user_id']#get the logged in users id
+
         budget_first = session.query(Budget).filter(extract('month',Budget.registered_on) == month,Budget.user_id==budget_user_id).all()#extracts all the budgets in the current month of the user logged in
         budget_count = session.query(Budget, func.count().label("sum")).filter(Budget.user_id == budget_user_id,extract('month',Budget.registered_on) == month).one()#function to count how many budgets the user has created
         #to get the transactions made in the current month
@@ -57,10 +60,13 @@ def hi():
         #the transaction object for the table of transactions in the dashboard
         transactions = session.query(Transactions).filter(Transactions.transaction_user_id==login_session['user_id']).all()
         category = session.query(Categories).all();
-        return render_template('dashboard.html',category=category,number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count)
+        return render_template('dashboard.html',mydate=mydate,month=month,category=category,number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count)
 
-@app.template_filter('strftime')
+@app.template_filter('strf')
 def datetimeformat(date, format='%d-%m-%Y'):
+        return date.strftime(format)
+@app.template_filter('month1')
+def datetimeformat(date, format='%B'):
         return date.strftime(format)
 #the handler which deals with the user registration
 @app.route('/register', methods=['GET', 'POST'])
@@ -118,6 +124,19 @@ def login():
             flash('Logged in successfully')
             return redirect(url_for('hi'))
     return render_template('login.html')
+@app.route('/createBudget',methods=['GET','POST'])
+def newBudget():
+    if request.method == 'POST':
+        newbudgetname = Budget(
+            B_name=request.form['name'],
+            B_Amount=float(request.form['B_Amount']),
+            user_id=login_session['user_id'])
+        session.add(newbudgetname)
+        session.commit()
+        flash('new budget created')
+        return render_template('dashboard.html')
+    else:
+        return render_template('createnewbudget.html')
 
 #when a budget under the navigation bar is clicked it renders a new page with the budget details and also we can then make new transactions from there
 @app.route('/budget/<int:budget_id>',methods=['GET','POST'])

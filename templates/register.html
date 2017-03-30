@@ -67,6 +67,12 @@
 					<label for="email" class="label">Email Address</label>
 					<input id="email" type="text" name="email" class="input" value="{{ request.form.username }}" required>
 				</div>
+				<div class="btn-group">
+					<label for="userrole" class="label">Select one of the following roles<br></label>
+				  <button type="button" class="btn-primary" namwe="Student" value="1">Student</button>
+				  <button type="button" class="btn-primary" name="SingleWorking" value="'2">Single Working</button>
+				  <button type="button" class="btn-primary" name="Family">Family</button>
+				</div>
 				<div class="group">
 					<input type="submit" class="button" value="Sign Up">
 				</div>
