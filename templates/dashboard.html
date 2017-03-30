@@ -80,7 +80,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="dashboard.html">LUS - Let Us Save</a>
+                <a class="navbar-brand" href="dashboard.html"><strong>M x 3--> My Money Manager</strong></a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -202,10 +202,58 @@
 
                 <!-- Page Heading -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-6">
                         <h1 class="page-header">
-                             <medium>Expense Management</medium>
-                        </h1>
+                             <strong>Expense Management</strong>  </h1>
+                            </div>
+                              <div class="col-lg-6 right">
+                            <div class='time-frame'>
+    <div id='date-part'></div>
+    <div id='time-part'></div>
+</div></div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+                            <script>$(document).ready(function() {
+    var interval = setInterval(function() {
+        var momentNow = moment();
+        $('#date-part').html(momentNow.format('YYYY MMMM DD') + ' '
+                            + momentNow.format('dddd')
+                             .substring(0,3).toUpperCase());
+        $('#time-part').html(momentNow.format('A hh:mm:ss'));
+    }, 100);
+
+    $('#stop-interval').on('click', function() {
+        clearInterval(interval);
+    });
+});</script>
+                            <style>.time-frame {
+    background-color: #000000;
+    color: #ffffff;
+    width: 400px;
+    font-family: Arial;
+                                 position: absolute;
+    left: 40%;
+    top: 10%;
+}
+
+.time-frame > div {
+    width: 100%;
+    text-align: center;
+    margin-top:3%;
+}
+
+#date-part {
+    font-size: 1.2em;
+}
+#time-part {
+    font-size: 2em;
+}</style>
+
+<br>
+
+
+
 
                     </div>
                 </div>
@@ -232,7 +280,7 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge">{{ number_transaction.number_trans }}</div>
-                                        <div>New Transactions made in <strong>this</strong> MONTH!</div>
+                                        <div>New Transactions made in <strong>this</strong> MONTH!  {{ month }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -250,11 +298,11 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-home fa-5x"></i>
+                                        <i class="fa fa-btc fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">4</div>
-                                        <div>New Home Automation Activities Today!</div>
+                                        <div class="huge">{{ budget_count.sum }}</div>
+                                        <div>Number of Budgets for <strong>this</strong> MONTH</div>
                                     </div>
                                 </div>
                             </div>
@@ -320,17 +368,19 @@
                                     <table class="table table-bordered table-hover table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Transaction Number</th>
+                                                <th>Transaction Name</th>
                                                 <th>Order Date</th>
-                                                <th>Amount (USD)</th>
+                                                <th>Description</th>
+                                                <th>Amount (RM)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 {% for trans in transactions %}
-                                                <td>{{ trans.id }}</td>
-                                                <td>{{ trans.registered_on.date() }}</td>
-                                                <td> ${{ trans.B_Amount }}</td>
+                                                <td>{% for cat in category %}{% if trans.category_id == cat.id %}{{ cat.C_name }}{% endif %}{% endfor %}</td>
+                                                <td>{{ trans.registered_on.date()|strftime }}</td>
+                                                     <td> {{ trans.description }}</td>
+                                                <td> {{ trans.B_Amount}}RM</td>
 
                                             </tr>
                                          {% endfor %}

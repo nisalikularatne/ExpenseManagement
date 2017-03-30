@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey,Column,Integer,String,DateTime
+from sqlalchemy import ForeignKey,Column,Integer,String,DateTime,LargeBinary
 import sys
 import unicodedata
 import datetime
@@ -74,6 +74,7 @@ class Transactions(Base):
     __tablename__='transactions'
     id=Column(Integer,primary_key=True)
     B_Amount = Column(String(200),nullable=False)
+
     description=Column(String(1000))
     registered_on = Column(DateTime)
     budget_id = Column(Integer, ForeignKey('budget.id'))

@@ -1,7 +1,7 @@
 # import all the modules for the project
 import datetime
 from datetime import date
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,send_from_directory
 from flask import flash,jsonify
 from flask_login import login_user
 from sqlalchemy import create_engine,func,extract
@@ -13,10 +13,15 @@ from datetime import datetime
 from datetime import timedelta
 import os
 from passlib.hash import sha256_crypt
+from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+photos = UploadSet('photos', IMAGES)
 
 os.environ['no_proxy'] = '127.0.0.1,localhost'
 #statements to load the database
 app = Flask(__name__)
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 login_manager = LoginManager()
 login_manager.init_app(app)
 engine = create_engine('sqlite:///HomeAutomation.db')
@@ -45,14 +50,18 @@ def hi():
         month=today.month#gets the current month
         budget_user_id = login_session['user_id']#get the logged in users id
         budget_first = session.query(Budget).filter(extract('month',Budget.registered_on) == month,Budget.user_id==budget_user_id).all()#extracts all the budgets in the current month of the user logged in
-        budget_count = session.query(Budget, func.count().label("sum")).filter(Budget.user_id == budget_user_id).one()#function to count how many budgets the user has created
+        budget_count = session.query(Budget, func.count().label("sum")).filter(Budget.user_id == budget_user_id,extract('month',Budget.registered_on) == month).one()#function to count how many budgets the user has created
         #to get the transactions made in the current month
         number_transaction=session.query(Transactions,func.count().label("number_trans")).filter(
         Transactions.transaction_user_id==login_session['user_id'],extract('month',Transactions.registered_on) == month).one()
         #the transaction object for the table of transactions in the dashboard
         transactions = session.query(Transactions).filter(Transactions.transaction_user_id==login_session['user_id']).all()
-        return render_template('dashboard.html', number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count)
+        category = session.query(Categories).all();
+        return render_template('dashboard.html',category=category,number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count)
 
+@app.template_filter('strftime')
+def datetimeformat(date, format='%d-%m-%Y'):
+        return date.strftime(format)
 #the handler which deals with the user registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -130,12 +139,14 @@ def showindividualbudget(budget_id):
       categoryname=request.form.get('categoryname')
       categoryidofname = session.query(Categories).filter(
           Categories.C_name == categoryname).one()
+
       newCategoryTransaction = Transactions(
           B_Amount=request.form['amount'], registered_on=datetime.now(), category_id=categoryidofname.id, budget_id=budget_id,
           transaction_user_id=login_session['user_id'],description=request.form['description'])
       session.add(newCategoryTransaction)
       session.commit()
       return redirect(url_for('showindividualbudget', budget_id=budget_id))
+
 
     return render_template('individualbudget.html', categoriesfull=categoriesfull, categoriesnames=categoriesnames,
                            budget_first=budget_first, transactions=transactions,
@@ -190,26 +201,30 @@ def showreports():
 def datetimeformat(date, format='%d-%m-%Y %H:%M'):
         return date.strftime(format)
 
-@app.route('/reports/monthly',methods=['GET','POST'])
+@app.route('/reports/yearly',methods=['GET','POST'])
 def showweeklyreports():
     if request.method=='POST':
-      month=request.form.get('monthname');
+      year=request.form.get('year');
       budget_user_id = login_session['user_id']
-      budget_name = session.query(Budget).filter(extract('month',Budget.registered_on) == month,Budget.user_id==budget_user_id).all();
+      budget_name = session.query(Budget).filter(extract('year',Budget.registered_on) == year,Budget.user_id==budget_user_id).all();
       category = session.query(Categories).all();
       transaction = session.query(Transactions).all();
-      return render_template('reports.html',budget_name = budget_name,category = category,transaction = transaction,month=month)
-    return render_template('reports.html')
+
+      return render_template('weeklyreport.html',budget_name = budget_name,category = category,transaction = transaction,year=year)
+    return render_template('weeklyreport.html')
 @app.template_filter('strftime')
 def datetimeformat(date, format='%d-%m-%Y %H:%M'):
         return date.strftime(format)
+
+@app.template_filter('str')
+def dateformat(date, format='%d-%m-%Y %H:%M'):
+    return date.strftime('%B')
 #for the log out functionality
 @app.route('/clearSession')
 def clearSession():
     login_session.clear()
     flash("logged out")
     return redirect('/login')
-
 
 
 #main function

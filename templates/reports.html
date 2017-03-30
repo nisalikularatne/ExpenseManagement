@@ -9,28 +9,30 @@
      <select name="monthname"  onchange="this.form.submit()" onchange="">
                    <option value="" disabled selected>Select your Month</option>
 
-                   <option value="1" name="1" {% if ('1' == month) %} selected="selected"  {% endif %} >January</option>
-                   <option value="2" name="2"{% if ('2' == month) %} selected="selected"  {% endif %} >February</option>
-                   <option value="3" name="3"{% if ('3' == month) %} selected="selected"  {% endif %} >March</option>
-                   <option value="4" name="4"{% if ('4' == month) %} selected="selected"  {% endif %} >April</option>
-                   <option value="5" name="5"{% if ('5' == month) %} selected="selected"  {% endif %} >May</option>
-                   <option value="6" name="6"{% if ('6' == month) %} selected="selected"  {% endif %} >June</option>
-                   <option value="7" name="7"{% if ('7' == month) %} selected="selected"  {% endif %} >July</option>
-                   <option value="8" name="8"{% if ('8' == month) %} selected="selected"  {% endif %} >August</option>
-                   <option value="9" name="9"{% if ('9' == month) %} selected="selected"  {% endif %} >September</option>
-                   <option value="10" name="10"{% if ('10' == month) %} selected="selected"  {% endif %} >October</option>
-                   <option value="11" name="11"{% if ('11' == month) %} selected="selected"  {% endif %} >November</option>
-                   <option value="12" name="12"{% if ('12' == month) %} selected="selected"  {% endif %} >December</option>
+                   <option value="4" name="4" {% if ('4' == month) %} selected="selected"  {% endif %} >April 2017</option>
+                   <option value="3" name="3"{% if ('3' == month) %} selected="selected"  {% endif %} >March 2017</option>
+                   <option value="2" name="2"{% if ('2' == month) %} selected="selected"  {% endif %} >February 2017</option>
+                   <option value="1" name="1"{% if ('1' == month) %} selected="selected"  {% endif %} >January 2017</option>
+                   <option value="12" name="12"{% if ('12' == month) %} selected="selected"  {% endif %} >December 2016</option>
+                   <option value="11" name="11"{% if ('11' == month) %} selected="selected"  {% endif %} >November 2016</option>
+                   <option value="10" name="10"{% if ('10' == month) %} selected="selected"  {% endif %} >October 2016</option>
+                   <option value="9" name="9"{% if ('9' == month) %} selected="selected"  {% endif %} >September 2016</option>
+                   <option value="8" name="8"{% if ('8' == month) %} selected="selected"  {% endif %} >August 2016</option>
+                   <option value="7" name="7"{% if ('7' == month) %} selected="selected"  {% endif %} >July 2016</option>
+                   <option value="6" name="6"{% if ('6' == month) %} selected="selected"  {% endif %} >June 2016</option>
+                   <option value="5" name="5"{% if ('5' == month) %} selected="selected"  {% endif %} >May 2016</option>
 
 
   </select><br><br>
 
     {% for b in budget_name %}
+         <br><br>
         {{b.B_name}}
     <table>
 	  <tr>
-	    <th>Date</th>
+	    <th>Date and Time</th>
 	    <th>Category</th>
+        <th>Decription</th>
 	    <th>Amount</th>
 	  </tr>
 
@@ -39,15 +41,14 @@
             <tr>
                 <td>{{ trans.registered_on|strftime}}</td>
                 <td>{% for cat in category %}{% if trans.category_id == cat.id %}{{ cat.C_name }}{% endif %}{% endfor %}</td>
-                <td>${{ trans.B_Amount }}</td>
+                  <td> {{ trans.description }}</td>
+                <td> {{ trans.B_Amount }} RM</td>
+
             </tr>
+
             {% endif %}
          {% endfor %}
-        <tr>
-            <td></td>
-            <td></td>
-            <td>Total : </td>
-        </tr>
+
 
 	</table>
     {% endfor %}

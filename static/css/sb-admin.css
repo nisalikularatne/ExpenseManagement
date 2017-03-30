@@ -15,6 +15,14 @@ body {
     body {
         margin-top: 50px;
     }
+
+}
+@media(max-width:768px) {
+
+    .time-frame
+ {
+     display:none;
+ }
 }
 
 #wrapper {
