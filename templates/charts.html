@@ -1,6 +1,6 @@
 <!doctype html>
 <head>
-    <title>Google Charts with Flask</title>
+    <title>Charts</title>
           <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script type="text/javascript">
@@ -34,14 +34,45 @@
                   document.getElementById('chart_div'));
           var options = {
               title: 'My Daily Activities',
-              is3D: true,
+              titleTextStyle: {
+                        color: '#c4bdbd',
+                        fontName: 'Roboto',
+                        fontSize: '12px',
+                        bold: 'True',
+                        italic: 'False' },
+              backgroundColor: {fill: '#2d4059'},
+
           };
           chart.draw(data, options);
       }
     </script>
 
     <style>
+
+        @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+
+        body {
+            background-color: #2d4059;
+            font-family: "Roboto", helvetica, arial, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            text-rendering: optimizeLegibility;
+        }
+
+        h1 { color: #56ea54;
+            font-family: "Roboto", helvetica, arial, sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 64px;
+            margin: 0 0 0;
+            padding: 20px 30px;
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+        }
+
         #content {
+            background-color: #2d4059;
             width: 80%;
             height: 60%;
             min-width: 800px;
@@ -53,6 +84,26 @@
         }
         #chart_div {
             min-height: 400px;
+            background-color: #2d4059;
+        }
+
+        select {
+            width: 25%;
+            font-weight: bold;
+            padding: 4px 12px;
+            border: none;
+            border-radius: 3px;
+            background-color: #2d4059;
+            color: #56ea54;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+            animation: float 5s infinite;
+            border-top: 1px solid #56ea54;
+            border-bottom: 1px solid #56ea54;
+            border-right: 1px solid #56ea54;
+            border-left: 1px solid #56ea54;
+
         }
     </style>
 
@@ -65,27 +116,27 @@
 
     <!-- Include more content here or below the chart, using Flask / Jinja. -->
     <div id="content">
-        <h1>Expense Categories Charts</h1>
+        <h1>Expense Categories Charts</h1><br>
          <form name="budget_form" id="budget_form" action="{{url_for('showchartJSON')}}" method="POST" >
           <select name="monthname"  onchange="this.form.submit()">
 
 
-                   <option value="3" name="3"{% if ('3' == month) %} selected="selected"  {% endif %} >March 2017</option>
-                   <option value="2" name="2"{% if ('2' == month) %} selected="selected"  {% endif %} >February 2017</option>
-                 <option value="1" name="1" {% if ('1' == month) %} selected="selected"  {% endif %} >January 2017</option>
-                  <option value="12" name="12"{% if ('12' == month) %} selected="selected"  {% endif %} >December 2016</option>
-                    <option value="11" name="11"{% if ('11' == month) %} selected="selected"  {% endif %} >November 2016</option>
-                     <option value="10" name="10"{% if ('10' == month) %} selected="selected"  {% endif %} >October 2016</option>
-                   <option value="9" name="9"{% if ('9' == month) %} selected="selected"  {% endif %} >September 2016</option>
-                 <option value="8" name="8"{% if ('8' == month) %} selected="selected"  {% endif %} >August 2016</option>
-                  <option value="7" name="7"{% if ('7' == month) %} selected="selected"  {% endif %} >July 2016</option>
-                  <option value="6" name="6"{% if ('6' == month) %} selected="selected"  {% endif %} >June 2016</option>
-                 <option value="5" name="5"{% if ('5' == month) %} selected="selected"  {% endif %} >May 2016</option>
-            <option value="4" name="4"{% if ('4' == month) %} selected="selected"  {% endif %} >April 2016</option>
+              <option value="3" name="3"{% if ('3' == month) %} selected="selected"  {% endif %} >March 2017</option>
+              <option value="2" name="2"{% if ('2' == month) %} selected="selected"  {% endif %} >February 2017</option>
+              <option value="1" name="1" {% if ('1' == month) %} selected="selected"  {% endif %} >January 2017</option>
+              <option value="12" name="12"{% if ('12' == month) %} selected="selected"  {% endif %} >December 2016</option>
+              <option value="11" name="11"{% if ('11' == month) %} selected="selected"  {% endif %} >November 2016</option>
+              <option value="10" name="10"{% if ('10' == month) %} selected="selected"  {% endif %} >October 2016</option>
+              <option value="9" name="9"{% if ('9' == month) %} selected="selected"  {% endif %} >September 2016</option>
+              <option value="8" name="8"{% if ('8' == month) %} selected="selected"  {% endif %} >August 2016</option>
+              <option value="7" name="7"{% if ('7' == month) %} selected="selected"  {% endif %} >July 2016</option>
+              <option value="6" name="6"{% if ('6' == month) %} selected="selected"  {% endif %} >June 2016</option>
+              <option value="5" name="5"{% if ('5' == month) %} selected="selected"  {% endif %} >May 2016</option>
+              <option value="4" name="4"{% if ('4' == month) %} selected="selected"  {% endif %} >April 2016</option>
 
 
 
-  </select><br><br>
+          </select><br>
 
 
          <select name="budgetname" id="budgetname"   onchange="this.form.submit()" >
@@ -107,6 +158,6 @@
 
              </form>
     </div>
-<a href="/hi">Go back to dashboard</a>
+<a href="/hi" style="position: absolute; bottom: 5px">Go back to dashboard</a>
 </body>
 <html>
