@@ -16,16 +16,18 @@ class User(Base):
     password=Column(String(20),nullable=False)
     email = Column(String(250), nullable=False)
     registered_on = Column(DateTime, default=datetime.datetime.utcnow())
+    role_id=Column(Integer)
     budget = RelationshipProperty("Budget")
     transactions = RelationshipProperty("Transactions")
 
 
 
-    def __init__(self, username, password, email):
+    def __init__(self, username, password, email,role_id):
        self.username = username
        self.password = password
        self.email = email
        self.registered_on = datetime.datetime.utcnow()
+       self.role_id=role_id
 
 
     def is_authenticated(self):
@@ -50,6 +52,7 @@ class User(Base):
 class Budget(Base):
     __tablename__='budget'
     id = Column(Integer, primary_key=True)
+    role_id = Column(Integer)
     B_name=Column(String(250),nullable=False)
     B_Amount=Column(Integer(200))
     registered_on = Column(DateTime, default=datetime.datetime.utcnow())

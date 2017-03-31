@@ -12,6 +12,12 @@ from flask import session as login_session
 from datetime import datetime
 from datetime import timedelta
 import os
+from flask.ext.wtf import Form
+from wtforms import StringField,SubmitField
+class BudgetUpdateForm(Form):
+    budgetname = StringField('budgetName')
+    submit1=SubmitField('submit')
+
 from passlib.hash import sha256_crypt
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 photos = UploadSet('photos', IMAGES)
@@ -51,7 +57,7 @@ def hi():
         mydate = datetime.now()
         mydate=mydate.strftime("%B")
         budget_user_id = login_session['user_id']#get the logged in users id
-
+        user_details=session.query(User).all()
         budget_first = session.query(Budget).filter(extract('month',Budget.registered_on) == month,Budget.user_id==budget_user_id).all()#extracts all the budgets in the current month of the user logged in
         budget_count = session.query(Budget, func.count().label("sum")).filter(Budget.user_id == budget_user_id,extract('month',Budget.registered_on) == month).one()#function to count how many budgets the user has created
         #to get the transactions made in the current month
@@ -60,7 +66,7 @@ def hi():
         #the transaction object for the table of transactions in the dashboard
         transactions = session.query(Transactions).filter(Transactions.transaction_user_id==login_session['user_id']).all()
         category = session.query(Categories).all();
-        return render_template('dashboard.html',mydate=mydate,month=month,category=category,number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count)
+        return render_template('dashboard.html',mydate=mydate,month=month,category=category,number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count,user_details=user_details)
 
 @app.template_filter('strf')
 def datetimeformat(date, format='%d-%m-%Y'):
@@ -77,6 +83,7 @@ def register():
     email = request.form['email'];
     registered_user = session.query(User).filter_by(username=username).all()
     registered_email = session.query(User).filter_by(email=email).all()
+
     if int(len(registered_user)) > 0:
         flash("User already exists")
         return redirect(url_for('register'))
@@ -85,10 +92,64 @@ def register():
         return redirect(url_for('register'))
     else:
         password = sha256_crypt.encrypt(request.form['password'])
-        user = User(request.form['username'], password, request.form['email'])
+        user = User(request.form['username'], password, request.form['email'],request.form['role_id'])
         session.add(user)
         session.commit()
         flash('User successfully registered')
+        if request.form['role_id'] == '1':
+            newbudgetname = Budget(
+                B_name='University',
+                B_Amount=float('3000'),
+                role_id=request.form['role_id'],
+                user_id=user.id)
+            session.add(newbudgetname)
+            session.commit()
+            newbudgetname2 = Budget(
+                B_name='Part-Time Job',
+                B_Amount=float('1000'),
+                role_id=request.form['role_id'],
+                user_id=user.id)
+            session.add(newbudgetname2)
+            session.commit()
+        if request.form['role_id'] == '2':
+                newbudgetname_1 = Budget(
+                    B_name='HouseHold',
+                    B_Amount=float('2000'),
+                    role_id=request.form['role_id'],
+                    user_id=user.id)
+                session.add(newbudgetname_1)
+                session.commit()
+                newbudgetname_2 = Budget(
+                    B_name='Entertainment',
+                    B_Amount=float('400'),
+                    role_id=request.form['role_id'],
+                    user_id=user.id)
+                session.add(newbudgetname_2)
+                session.commit()
+        if request.form['role_id'] == '3':
+                newbudgetname_3 = Budget(
+                    B_name='HouseHold',
+                    B_Amount=float('5000'),
+                    role_id=request.form['role_id'],
+                    user_id=user.id)
+                session.add(newbudgetname_3)
+                session.commit()
+                newbudgetname2 = Budget(
+                    B_name="Children's School" ,
+                    B_Amount=float('1000'),
+                    role_id=request.form['role_id'],
+                    user_id=user.id)
+                session.add(newbudgetname2)
+                session.commit()
+                newbudgetname3 = Budget(
+                    B_name="Family Outings And Entertainment",
+                    B_Amount=float('700'),
+                    role_id=request.form['role_id'],
+                    user_id=user.id)
+                session.add(newbudgetname3)
+                session.commit()
+
+
         return redirect(url_for('login'))
 #contact handler not yet working
 @app.route('/contact')
@@ -134,7 +195,7 @@ def newBudget():
         session.add(newbudgetname)
         session.commit()
         flash('new budget created')
-        return render_template('dashboard.html')
+        return redirect(url_for('hi'))
     else:
         return render_template('createnewbudget.html')
 
@@ -154,6 +215,7 @@ def showindividualbudget(budget_id):
         budget_id==Transactions.budget_id).all()
     groupbytransactions=session.query(Categories.C_name,Transactions.description,func.sum(Transactions.B_Amount).label('transaction_category')).filter(Transactions.budget_id==budget_id,Transactions.category_id==Categories.id).group_by(Categories.C_name).all()
     #handles the posting of a transaction into the database
+
     if request.method=='POST':
       categoryname=request.form.get('categoryname')
       categoryidofname = session.query(Categories).filter(
@@ -167,10 +229,20 @@ def showindividualbudget(budget_id):
       return redirect(url_for('showindividualbudget', budget_id=budget_id))
 
 
+
+
     return render_template('individualbudget.html', categoriesfull=categoriesfull, categoriesnames=categoriesnames,
                            budget_first=budget_first, transactions=transactions,
                            transactionsinbudget=transactionsinbudget, categories=categories,groupbytransactions=groupbytransactions)
-
+@app.route('/budget/class/<int:budget_id>',methods=['POST'])
+def showindi(budget_id):
+    form1 = BudgetUpdateForm()
+    if request.method == 'POST' and request.form['budgetsubmit'] == 'Update Budget' :
+        budgetname = form1.budgetname.data
+        budget_first = session.query(Budget).filter(Budget.id == budget_id).one()
+        budget_first.B_Amount = budgetname
+        session.commit()
+        return redirect(url_for('showindividualbudget', budget_id=budget_id))
 #for handling the charts
 @app.route('/charts',methods=['GET','POST'])
 def showchartJSON():

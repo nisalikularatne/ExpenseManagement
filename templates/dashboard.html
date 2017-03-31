@@ -261,7 +261,27 @@
                     <div class="col-lg-12">
                         <div class="alert alert-info alert-dismissable">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="fa fa-info-circle"></i>  <strong>Hi {{ session.username }}  !! Welcome to your Dashboard</strong>
+                            <i class="fa fa-info-circle"></i>  <strong>Hi {{ session.username }}  !! Welcome to your Dashboard. Since you have registered as
+                        a {% for u in user_details %}
+                                {% if u.username==session.username %}
+                                    {{ u.role_id }}
+                                    {% if u.role_id==3 %}
+                                        <strong>we have created 3 standard budgets which can be viewed from the right hand side. The budgets
+                                        are created according to a normal malaysian family persons expense</strong>
+                                {% endif %}
+                                     {% if u.role_id==2 %}
+                                        <strong>we have created 2 standard budgets which can be viewed from the right hand side. The budgets
+                                        are created according to a normal malaysian single persons expense</strong>
+                                {% endif %}
+                                     {% if u.role_id==1 %}
+                                        <strong>we have created 3 standard budgets which can be viewed from the right hand side. The budgets
+                                        are created according to a normal malaysian student expense</strong>
+                                {% endif %}
+                                     {% if u.role_id==4 %}
+                                        <strong>Since you have no role we allow you to create your own budgets</strong>
+                                {% endif %}
+                                {% endif %}
+                            {% endfor %}</strong>
                         </div>
                     </div>
                 </div>
@@ -278,7 +298,7 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge">{{ number_transaction.number_trans }}</div>
-                                        <div>New Transactions made in <strong>this</strong> MONTH!  {{ month }}</div>
+                                        <div>New Transactions made in <strong>this</strong> MONTH!  </div>
                                     </div>
                                 </div>
                             </div>

@@ -14,7 +14,8 @@
         <div class="top">
             <div class="budget">
                 <div class="budget__title">
-                    Money left for {{ budget_first.B_name }}
+                    Money left for
+                    {{ budget_first.B_name }}
                 </div>
 
                 <div class="budget__value"> {% for trans in transactions %}
@@ -34,7 +35,18 @@
                 <div class="budget__income clearfix">
                     <div class="budget__income--text">Income</div>
                     <div class="right">
-                        <div class="budget__income--value">+ {{budget_first.B_Amount}} RM</div>
+                        <div class="budget__income--value">
+                            <form name='form1' action="{{url_for('showindi',budget_id=budget_first.id)}}" method="post">
+                            <input id="budget1"type="text" name="budgetname" value=" {{ budget_first.B_Amount }} ">RM
+
+                            <style>
+                                #budget1{
+                                    width:50px;
+                                }
+                            </style>
+  <input type="submit" name='budgetsubmit' value="Update Budget">
+                                </form>
+                        </div>
                         <div class="budget__income--percentage">&nbsp;</div>
                     </div>
                 </div>
@@ -93,9 +105,8 @@
   </select>
                  <input type="text" class=" add__description1" placeholder="Add description (Optional)" name="description">
                     <input id="myDIV2" type="number" class="add__value" name="amount" placeholder="Value">
-
-                    <button type="submit" id="myDIV3" class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
-                 </form>
+                      <input type="submit" name='enter' value="Enter">
+                   </form>
             <script>
 function myFunction() {
     document.getElementById("myDIV").classList.toggle("red-focus");
