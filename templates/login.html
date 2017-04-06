@@ -19,6 +19,7 @@
 <div id="login">
 
 {% block body %}
+
 <header>
 		<div class="main-menu">
 			<div class="container">
@@ -63,7 +64,22 @@
 					<input id="check" type="checkbox" class="check" name="checksign" value="check" checked >
 					<label for="check"><span class="icon"></span> Keep me Signed in</label>
 				</div>
-				<div class="group">
+
+                    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+    </ul>
+  {% endif %}
+                        <style>
+                        .flashes{
+                            color: #fb1406;
+                            font-size: 20px;
+                        }
+                        </style>
+{% endwith %}<div class="group">
 					<input type="submit" class="button" value="Sign In">
 				</div>
                     </form>

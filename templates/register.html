@@ -78,7 +78,21 @@
 
   </select>
 				</div>
-				<div class="group">
+				<div class="group">  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+    </ul>
+  {% endif %}
+                        <style>
+                        .flashes{
+                            color: #fb1406;
+                            font-size: 20px;
+                        }
+                        </style>
+{% endwith %}
 					<input type="submit" class="button" value="Sign Up">
 				</div>
                  </form>

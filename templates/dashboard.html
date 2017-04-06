@@ -80,7 +80,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="dashboard.html"><strong>M x 3--> My Money Manager</strong></a>
+                <a class="navbar-brand" href="dashboard.html"><strong>My Money Manager</strong></a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -180,7 +180,7 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo1"><i class="fa fa-pencil"></i> Reports <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo1" class="collapse">
                             <li>
-                                <a href="#">Weekly Report</a>
+                                <a href="/reports/yearly">Yearly Report</a>
                             </li>
                             <li>
                                 <a href="/reports/monthly">Monthly Report</a>
@@ -261,24 +261,21 @@
                     <div class="col-lg-12">
                         <div class="alert alert-info alert-dismissable">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <i class="fa fa-info-circle"></i>  <strong>Hi {{ session.username }}  !! Welcome to your Dashboard. Since you have registered as
-                        a {% for u in user_details %}
+                            <i class="fa fa-info-circle"></i>  <strong>Hi {{ session.username }}  ! Welcome to your Dashboard.
+                            {% for u in user_details %}
                                 {% if u.username==session.username %}
-                                    {{ u.role_id }}
+
                                     {% if u.role_id==3 %}
-                                        <strong>we have created 3 standard budgets which can be viewed from the right hand side. The budgets
-                                        are created according to a normal malaysian family persons expense</strong>
+                                        <strong>There are 3 new templates created for you, you can access them under the Budget option from the side bar.</strong>
                                 {% endif %}
                                      {% if u.role_id==2 %}
-                                        <strong>we have created 2 standard budgets which can be viewed from the right hand side. The budgets
-                                        are created according to a normal malaysian single persons expense</strong>
+                                        <strong>There are 2 new templates created for you, you can access them  under the Budget option from the side bar.</strong>
                                 {% endif %}
                                      {% if u.role_id==1 %}
-                                        <strong>we have created 3 standard budgets which can be viewed from the right hand side. The budgets
-                                        are created according to a normal malaysian student expense</strong>
+                                        <strong>There are 3 new templates created for you, you can access them  under the Budget option from the side bar.</strong>
                                 {% endif %}
                                      {% if u.role_id==4 %}
-                                        <strong>Since you have no role we allow you to create your own budgets</strong>
+                                        <strong>Since you have no Budget templates now, you can create new budget from the side bar under the Budget option.</strong>
                                 {% endif %}
                                 {% endif %}
                             {% endfor %}</strong>
@@ -328,6 +325,7 @@
 
 
 
+
                 <div class="row">
 
                     <div class="col-lg-6">
@@ -337,31 +335,14 @@
                             </div>
                             <div class="panel-body">
                                 <div class="list-group" id="Suggestion">
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">just now</span>
+                                    {% for b in sum_transactions %}
+                                        {% set x = (b.amount - b.total)/leftover_days %}
+                                        <a href="#" class="list-group-item">
                                         <i class="fa fa-fw fa-calendar"></i>
-                                        <script>
-                                            suggestion(5,5);
-                                        </script>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">just now</span>
-                                        <i class="fa fa-fw fa-calendar"></i> Calendar updated
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">4 minutes ago</span>
-                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">23 minutes ago</span>
-                                        <i class="fa fa-fw fa-truck"></i> Order 392 shipped
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">46 minutes ago</span>
-                                        <i class="fa fa-fw fa-money"></i> Invoice 653 has been paid
-                                    </a>
+                                            Your {{b.budget}} budget has RM {{b.amount - b.total}} left. Keep spending, you can spend RM {{ '%0.1f'|format (x|float) }} each day for the rest of the period.
+                                        </a>
+                                    {%endfor%}
                                 </div>
-
                             </div>
                         </div>
                     </div>

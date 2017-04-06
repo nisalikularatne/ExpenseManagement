@@ -1,6 +1,7 @@
 # import all the modules for the project
+import calendar
 import datetime
-from datetime import date
+from datetime import date,datetime
 from flask import Flask, render_template, request, redirect, url_for,send_from_directory
 from flask import flash,jsonify
 from flask_login import login_user
@@ -21,6 +22,9 @@ class BudgetUpdateForm(Form):
 from passlib.hash import sha256_crypt
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 photos = UploadSet('photos', IMAGES)
+
+
+
 
 os.environ['no_proxy'] = '127.0.0.1,localhost'
 #statements to load the database
@@ -63,10 +67,18 @@ def hi():
         #to get the transactions made in the current month
         number_transaction=session.query(Transactions,func.count().label("number_trans")).filter(
         Transactions.transaction_user_id==login_session['user_id'],extract('month',Transactions.registered_on) == month).one()
+        #Delta Days
+        now = datetime.now()
+        _,num_days = calendar.monthrange(now.year, now.month)
+        first_day = date(now.year, now.month, num_days)
+        today = date.today()
+        delta = first_day - today
+        delta_days= delta.days
         #the transaction object for the table of transactions in the dashboard
         transactions = session.query(Transactions).filter(Transactions.transaction_user_id==login_session['user_id']).all()
+        sum_transactions = session.query(Budget.B_name.label('budget'), Budget.B_Amount.label('amount'),func.sum(Transactions.B_Amount).label('total')).filter(Budget.id == Transactions.budget_id, Budget.user_id == login_session['user_id']).group_by(Transactions.budget_id).all()
         category = session.query(Categories).all();
-        return render_template('dashboard.html',mydate=mydate,month=month,category=category,number_transaction=number_transaction, transactions=transactions,budget_first=budget_first, budget_user_id=budget_user_id, budget_count=budget_count,user_details=user_details)
+        return render_template('dashboard.html',mydate=mydate,month=month,category=category,number_transaction=number_transaction,transactions=transactions,budget_first=budget_first,budget_user_id=budget_user_id,budget_count=budget_count,user_details=user_details,leftover_days =delta_days,sum_transactions = sum_transactions)
 
 @app.template_filter('strf')
 def datetimeformat(date, format='%d-%m-%Y'):
