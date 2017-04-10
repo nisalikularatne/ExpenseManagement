@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+}
+
+    body {
+        color: #000;olor: #555;
+        font-family: Open Sans;
+        font-size: 16px;
+        position: relative;
+        height: 100vh;
+        font-weight: 300;
+}
+
+    h1 {
+        position: absolute;
+        width: 350px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 48px;
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: bold;
+
+}
+    input[type=text] {
+        width: 80%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type=submit] {
+        width: 150px;
+        background-color: #28B9B5;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+}
+    input[type=submit]:hover {
+        background-color: #FF5049;
+}
+    button {
+        width: 250px;
+        background-color: #FF5049;
+        color: white;
+        padding: 4px 10px;
+        margin: 6px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+}
+
+    button:hover {
+        background-color: #28B9B5;
+}
+
+
+
+    </style>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600" rel="stylesheet" type="text/css">
+    <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' type=text/css href="{{ url_for('static', filename='css/createnewbudget.css')}}">
+    <title>Create New Budget</title>
+</head>
+
+<body>
+<div class="top2">
+
+<h1>Create a New Budget</h1>
+    </div>
+<div class="body1">
+<form action= "{{url_for('newBudget')}}" method = 'POST'>
+
+    <div class="text1">
+<p>Budget Details:</p>
+        </div>
+<input type = 'text' size='30' name = 'name' placeholder="Name of Budget (required)"><br>
+<input type = 'text' size='20' name = 'B_Amount' placeholder="Amount in Dollars ($) (required)"><br><br><br>
+    </div>
+<div class="button1">
+<input type='submit' value='Create Budget'>
+    </div><br>
+</form>
+
+
+<div class="bottom1">
+<a href= '/hi'><button>Cancel and go back to dashboard</button></a>
+    </div>
+</body>
+</html>
