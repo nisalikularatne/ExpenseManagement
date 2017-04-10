@@ -41,14 +41,9 @@
                     <div class="right">
                         <div class="budget__income--value">
                             <form name='form1' action="{{url_for('showindi',budget_id=budget_first.id)}}" method="post">
-                            <input id="budget1"type="text" name="budgetname" value=" {{ budget_first.B_Amount }} ">RM
-
-                            <style>
-                                #budget1{
-                                    width:50px;
-                                }
-                            </style>
-  <input type="submit" name='budgetsubmit' value="Update Budget">
+                            <input id="budget1"type="text" name="budgetname" value=" {{ budget_first.B_Amount }} " style="width: 55px; display: inline-block; border: 1px solid #ccc; border-radius: 4px;"> RM
+                   
+  <input type="submit" name='budgetsubmit' value="Update Budget" style="border: 1px solid #fafafa; border-radius: 4px; cursor: pointer; background-color: transparent; color: white; padding: 2px 4px;">
                                 </form>
                         </div>
                         <div class="budget__income--percentage">&nbsp;</div>
