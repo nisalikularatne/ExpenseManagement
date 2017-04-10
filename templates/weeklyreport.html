@@ -1,9 +1,202 @@
 
 <html>
+	
+    <style>
+
+        @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+
+        body {
+            background-color: #2d4059;
+            font-family: "Roboto", helvetica, arial, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            text-rendering: optimizeLegibility;
+        }
+
+        h1 { color: #56ea54;
+            font-family: "Roboto", helvetica, arial, sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 64px;
+            margin: 0 0 0;
+            padding: 20px 30px;
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        div.table-title {
+            display: block;
+            margin: auto;
+            max-width: 700px;
+            padding:5px;
+            width: 100%;
+        }
+
+        .table-title h2 {
+            color: #56ea54;
+            font-size: 25px;
+            font-weight: 400;
+            font-style:normal;
+            font-family: "Roboto", helvetica, arial, sans-serif;
+            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+            text-transform:uppercase;
+        }
+
+        .table-title h3 {
+            color: #fafafa;
+            font-size: 20px;
+            font-weight: 400;
+            font-style:normal;
+            font-family: "Roboto", helvetica, arial, sans-serif;
+            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+            text-transform:uppercase;
+        }
+
+        .table-fill {
+            background: white;
+            border-radius:3px;
+            border-collapse: collapse;
+            height: 200px;
+            margin: auto;
+            max-width: 700px;
+            padding:4px;
+            width: 100%;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            animation: float 5s infinite;
+        }
+
+        th {
+            color:#D5DDE5;;
+            background:#1b1e24;
+            border-bottom:4px solid #9ea7af;
+            border-right: 1px solid #343a45;
+            font-size:19px;
+            font-weight: 100;
+            padding:20px;
+            text-align:left;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            vertical-align:middle;
+        }
+
+        th:first-child {
+            border-top-left-radius:3px;
+        }
+
+        th:last-child {
+            border-top-right-radius:3px;
+            border-right:none;
+        }
+
+        tr {
+            border-top: 1px solid #C1C3D1;
+            border-bottom-: 1px solid #C1C3D1;
+            color:#666B85;
+            font-size:12px;
+            font-weight:normal;
+            text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+        }
+
+        tr:hover td {
+            background:#4E5066;
+            color:#FFFFFF;
+            border-top: 1px solid #22262e;
+            border-bottom: 1px solid #22262e;
+        }
+
+        tr:first-child {
+            border-top:none;
+        }
+
+        tr:last-child {
+            border-bottom:none;
+        }
+
+        tr:nth-child(odd) td {
+            background:#EBEBEB;
+        }
+
+        tr:nth-child(odd):hover td {
+            background:#4E5066;
+        }
+
+        tr:last-child td:first-child {
+            border-bottom-left-radius:3px;
+        }
+
+        tr:last-child td:last-child {
+            border-bottom-right-radius:3px;
+        }
+
+        td {
+            background:#FFFFFF;
+            padding:16px;
+            text-align:left;
+            vertical-align:middle;
+            font-weight:300;
+            font-size:14px;
+            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid #C1C3D1;
+        }
+
+        td:last-child {
+            border-right: 0px;
+        }
+
+        th.text-left {
+            text-align: left;
+        }
+
+        th.text-center {
+            text-align: center;
+        }
+
+        th.text-right {
+            text-align: right;
+        }
+
+        td.text-left {
+            text-align: left;
+        }
+
+        td.text-center {
+            text-align: center;
+        }
+
+        td.text-right {
+            text-align: right;
+        }
+
+        select {
+            width: 25%;
+            font-weight: bold;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 3px;
+            background-color: #2d4059;
+            color: #56ea54;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+            animation: float 5s infinite;
+            border-top: 1px solid #56ea54;
+            border-bottom: 1px solid #56ea54;
+            border-right: 1px solid #56ea54;
+            border-left: 1px solid #56ea54;
+
+        }
+
+
+    </style>	
 
     <head>
-        <h1>Reports</h1>
+        <meta charset="utf-8" />
+	    <title>Yearly Report</title>
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <h1>Yearly Reports</h1>
     </head>
+	
      <form name="month_form" id="month_form" action="{{url_for('showweeklyreports')}}" method="POST"  >
 
      <select name="year"  onchange="this.form.submit()">
@@ -18,30 +211,41 @@
 
   </select><br><br>
 
+    <h3>
     {% for b in budget_name %}
-         {{ b.registered_on|str}}<br>
+        <div class="table-title">
+         <br><br><h2>
+         {{ b.registered_on|str}}
+            </h2>
+            <h3>
         {{b.B_name}}    {{ b.B_Amount }}
+       </h3>
+        </div>
 
-    <table>
+    <table class="table-fill">
+    <thead>
 	  <tr>
-	    <th>Date</th>
-	    <th>Category</th>
-          <th>Decription</th>
-	    <th>Amount</th>
+          <th class="text-left">Date</th>
+          <th class="text-left">Category</th>
+          <th class="text-left">Decription</th>
+          <th class="text-left">Amount</th>
 	  </tr>
+      </thead>
+    <tbody class="table-hover">
 
         {% for trans in transaction %}
             {% if trans.budget_id == b.id %}
             <tr>
-                <td>{{ trans.registered_on|strftime}}</td>
-                <td>{% for cat in category %}{% if trans.category_id == cat.id %}{{ cat.C_name }}{% endif %}{% endfor %}</td>
-                <td>{{ trans.description }}</td>
-                <td>{{ trans.B_Amount }} RM</td>
+                <td class="text-left">{{ trans.registered_on|strftime}}</td>
+                <td class="text-left">{% for cat in category %}{% if trans.category_id == cat.id %}{{ cat.C_name }}{% endif %}{% endfor %}</td>
+                <td class="text-left">{{ trans.description }}</td>
+                <td class="text-left">{{ trans.B_Amount }} RM</td>
             {{ trans.total }}
             </tr>
             {% endif %}
          {% endfor %}
 
+    </tbody>
 
 	</table>
     {% endfor %}
