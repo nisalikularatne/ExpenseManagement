@@ -1,0 +1,38 @@
+/****TOP PART****/
+.top2 {
+    height: 25vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.png);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/**BOTTOM PART**/
+
+/*FORM*/
+
+.body1 {
+    position: absolute;
+    width: 100%;
+    top: 30%;
+    left: 12%;
+}
+
+.bottom1 {
+    position: absolute;
+    bottom: 3%;
+    left: 3%;
+}
+
+.button1 {
+    position: absolute;
+    right: 45%;
+    bottom: 40%;
+
+}
+
+.text1 {
+    font-size: 18px;
+    color: #FF5049;
+    font-weight: bold;
+}
