@@ -15,4 +15,5 @@ information to control the behavior of the house to maximize the budget.
 - To predict future expenses, categorical expenses and total expenses for upcoming months
 
 ## Project paper link 
-[project details]-file:///C:/Users/Nisali%20Kularatne/Downloads/gp01-fgr.pdf
+https://drive.google.com/open?id=1TWOfOhp4ggTD3Csq752EP_ACi1JwasfJ
+
